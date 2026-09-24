@@ -7,6 +7,7 @@
     <meta name="description" content="Tanish Jain is a Java and web developer from Indore, India. Internships, projects, skills, certifications and contact details.">
     <meta name="author" content="Tanish Jain">
     <meta name="theme-color" content="#dc143c">
+    <meta name="color-scheme" content="light dark">
 
     <meta property="og:type" content="website">
     <meta property="og:title" content="Tanish Jain | Java &amp; Web Developer">
@@ -16,318 +17,426 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Ubuntu:wght@400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
-    <script>document.documentElement.classList.add('js');</script>
+    <script>
+        // set JS flag + saved theme before first paint (avoids a flash of the wrong theme)
+        document.documentElement.classList.add('js');
+        try {
+            var t = localStorage.getItem('theme');
+            if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+        } catch (e) {}
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.js" defer></script>
     <script src="script.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <div class="progress" aria-hidden="true"><span></span></div>
 
     <header class="navbar">
-        <div class="max-width">
-            <a class="logo" href="#home">Tanish<span>.</span></a>
+        <div class="container nav-inner">
+            <a class="logo" href="#home" aria-label="Tanish Jain, home">
+                <span class="logo-badge">TJ</span>
+                <span class="logo-text">Tanish<span>.</span></span>
+            </a>
             <nav aria-label="Main">
                 <ul class="menu" id="menu">
-                    <li><a href="#home">Home</a></li>
                     <li><a href="#about">About</a></li>
-                    <li><a href="#experience">Internships</a></li>
+                    <li><a href="#experience">Experience</a></li>
                     <li><a href="#skills">Skills</a></li>
                     <li><a href="#projects">Projects</a></li>
+                    <li><a href="#achievements">Achievements</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </nav>
-            <button class="menu-btn" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false">
-                <i class="fas fa-bars" aria-hidden="true"></i>
-            </button>
+            <div class="nav-actions">
+                <button class="icon-btn theme-toggle" type="button" aria-label="Switch to dark theme">
+                    <i class="fas fa-moon" aria-hidden="true"></i>
+                </button>
+                <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false">
+                    <i class="fas fa-bars" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
     </header>
 
     <main id="main">
-        <!-- home section -->
+        <!-- hero -->
         <section class="home" id="home">
-            <div class="max-width">
+            <div class="container home-inner">
                 <div class="home-content">
-                    <p class="text-1">Hello, my name is</p>
-                    <h1 class="text-2">Tanish Jain</h1>
-                    <p class="text-3">And I'm a <span class="typing">Java Developer</span></p>
+                    <p class="eyebrow">&lt;hello world /&gt;</p>
+                    <h1 class="home-title">I'm <span class="grad">Tanish Jain</span></h1>
+                    <p class="home-role">
+                        <span class="visually-hidden">Java Developer, Web Developer, Full Stack Developer, Project Manager and Singer.</span>
+                        <span aria-hidden="true">A <span class="typing">Java Developer</span></span>
+                    </p>
+                    <p class="home-lead">I build clean, reliable software with Java and the web, from front-end
+                        interfaces to databases, and I'm always learning something new.</p>
                     <div class="home-actions">
-                        <a class="btn" href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer">Hire me</a>
-                        <a class="btn btn-outline" href="#projects">See my work</a>
+                        <a class="btn" href="#contact"><i class="fas fa-paper-plane" aria-hidden="true"></i> Hire me</a>
+                        <a class="btn btn-ghost" href="#projects">See my work <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
                     </div>
+                    <ul class="home-social">
+                        <li><a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a></li>
+                        <li><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a></li>
+                        <li><a href="mailto:tanishharsh158@gmail.com" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a></li>
+                    </ul>
                 </div>
             </div>
             <a class="scroll-hint" href="#about" aria-label="Scroll to About section">
-                <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                <span class="mouse" aria-hidden="true"></span>
             </a>
         </section>
 
-        <!-- about section -->
-        <section class="about" id="about">
-            <div class="max-width">
-                <h2 class="title" data-sub="who I am">About me</h2>
-                <div class="about-content">
-                    <div class="column left reveal">
+        <!-- about -->
+        <section class="section" id="about">
+            <div class="container">
+                <header class="section-head reveal">
+                    <p class="kicker">01 &middot; About</p>
+                    <h2>Who I am</h2>
+                </header>
+                <div class="about-grid">
+                    <figure class="about-photo reveal">
                         <img src="images/profile.jpg" alt="Portrait of Tanish Jain" width="800" height="1003" loading="lazy">
-                    </div>
-                    <div class="column right reveal">
-                        <h3 class="text">I'm Tanish, a <span>developer</span> from Indore</h3>
-                        <p>I love turning ideas into clean code and colourful interfaces. I'm a tech enthusiast who
-                            is comfortable across the stack: I use object-oriented programming and data structures to write
-                            maintainable software, I work with a range of technologies and tools, and I manage databases.
-                            I'm always learning something new.</p>
-                        <ul class="quick-facts">
-                            <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Indore, Madhya Pradesh</li>
-                            <li><i class="fas fa-briefcase" aria-hidden="true"></i> 3 internships</li>
-                            <li><i class="fas fa-code" aria-hidden="true"></i> 5 projects</li>
+                        <figcaption class="photo-tag"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Indore, India</figcaption>
+                    </figure>
+                    <div class="about-text reveal">
+                        <h3>A tech enthusiast who loves <span class="accent">clean code</span> and <span class="accent">colourful interfaces</span>.</h3>
+                        <p>I'm comfortable across the stack: I use object-oriented programming and data structures
+                            to write maintainable software, I work with a range of technologies and tools, and I
+                            manage databases. I've interned in front-end development, Java development and
+                            machine learning, and I enjoy leading projects as much as coding them.</p>
+                        <ul class="stats">
+                            <li><strong data-count="3">3</strong><span>Internships</span></li>
+                            <li><strong data-count="5">5</strong><span>Projects</span></li>
+                            <li><strong data-count="3">3</strong><span>Certifications</span></li>
+                            <li><strong>1st</strong><span>GDSC Quizmania</span></li>
                         </ul>
-                        <a class="btn" href="https://drive.google.com/file/d/181rwQDIQmCbTcsAJp9cvVajt9WE7OnSk/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">
-                            <i class="fas fa-file-download" aria-hidden="true"></i> Download resume
-                        </a>
+                        <div class="about-actions">
+                            <a class="btn" href="https://drive.google.com/file/d/181rwQDIQmCbTcsAJp9cvVajt9WE7OnSk/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-file-download" aria-hidden="true"></i> Download resume
+                            </a>
+                            <a class="btn btn-outline" href="#contact">Let's talk</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- internships section -->
-        <section class="experience dark" id="experience">
-            <div class="max-width">
-                <h2 class="title" data-sub="where I've worked">Internships</h2>
-                <div class="card-grid">
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-laptop-code" aria-hidden="true"></i>
-                        <h3 class="card-title">UNIcompiler</h3>
-                        <p class="card-role">Front-End Developer Intern</p>
-                        <p>Delivered assigned front-end tasks, tracked down and fixed errors and bugs, and helped the team hit its goals.</p>
-                        <ul class="tags" aria-label="Skills used">
-                            <li>HTML</li><li>CSS</li><li>JavaScript</li><li>React.js</li>
-                        </ul>
-                    </article>
-                    <article class="card reveal">
-                        <i class="card-icon fab fa-java" aria-hidden="true"></i>
-                        <h3 class="card-title">Oasis Infobyte</h3>
-                        <p class="card-role">Java Developer Intern</p>
-                        <p>Java development internship that also involved handling project management for the team.</p>
-                        <ul class="tags" aria-label="Skills used">
-                            <li>Java</li><li>Competitive Programming</li><li>Analytical Skills</li>
-                        </ul>
-                    </article>
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-brain" aria-hidden="true"></i>
-                        <h3 class="card-title">Axiom Cloud Solutions</h3>
-                        <p class="card-role">Data Science &amp; ML Intern</p>
-                        <p>Built a cancer prediction project using a real-world dataset and machine learning techniques.</p>
-                        <ul class="tags" aria-label="Skills used">
-                            <li>Python</li><li>Data Science</li><li>Machine Learning</li>
-                        </ul>
-                    </article>
-                </div>
+        <!-- experience -->
+        <section class="section alt" id="experience">
+            <div class="container">
+                <header class="section-head reveal">
+                    <p class="kicker">02 &middot; Experience</p>
+                    <h2>Where I've worked</h2>
+                </header>
+                <ol class="timeline">
+                    <li class="timeline-item reveal">
+                        <span class="timeline-dot" aria-hidden="true"><i class="fas fa-laptop-code"></i></span>
+                        <article class="timeline-card">
+                            <div class="timeline-top">
+                                <div>
+                                    <h3>Front-End Developer Intern</h3>
+                                    <p class="company">UNIcompiler</p>
+                                </div>
+                                <span class="badge">Web Dev &amp; Design</span>
+                            </div>
+                            <p>Delivered assigned front-end tasks, tracked down and fixed errors and bugs, and helped the team hit its goals.</p>
+                            <ul class="tags" aria-label="Skills used">
+                                <li>HTML</li><li>CSS</li><li>JavaScript</li><li>React.js</li>
+                            </ul>
+                            <button class="text-link" type="button" data-cert="unicompiler"><i class="fas fa-certificate" aria-hidden="true"></i> View certificate</button>
+                        </article>
+                    </li>
+                    <li class="timeline-item reveal">
+                        <span class="timeline-dot" aria-hidden="true"><i class="fab fa-java"></i></span>
+                        <article class="timeline-card">
+                            <div class="timeline-top">
+                                <div>
+                                    <h3>Java Developer Intern</h3>
+                                    <p class="company">Oasis Infobyte</p>
+                                </div>
+                                <span class="badge">Java</span>
+                            </div>
+                            <p>Java development internship that also involved handling project management for the team.</p>
+                            <ul class="tags" aria-label="Skills used">
+                                <li>Java</li><li>Competitive Programming</li><li>Analytical Skills</li>
+                            </ul>
+                        </article>
+                    </li>
+                    <li class="timeline-item reveal">
+                        <span class="timeline-dot" aria-hidden="true"><i class="fas fa-brain"></i></span>
+                        <article class="timeline-card">
+                            <div class="timeline-top">
+                                <div>
+                                    <h3>Data Science &amp; ML Intern</h3>
+                                    <p class="company">Axiom Cloud Solutions</p>
+                                </div>
+                                <span class="badge">Machine Learning</span>
+                            </div>
+                            <p>Built a cancer prediction project using a real-world dataset and machine learning techniques.</p>
+                            <ul class="tags" aria-label="Skills used">
+                                <li>Python</li><li>Data Science</li><li>Machine Learning</li>
+                            </ul>
+                            <button class="text-link" type="button" data-cert="axiom"><i class="fas fa-certificate" aria-hidden="true"></i> View certificate</button>
+                        </article>
+                    </li>
+                </ol>
             </div>
         </section>
 
-        <!-- skills section -->
-        <section class="skills" id="skills">
-            <div class="max-width">
-                <h2 class="title" data-sub="what I know">My Skills</h2>
-                <div class="skills-content">
-                    <div class="column left reveal">
-                        <h3 class="text">Achievements</h3>
-                        <ul class="achievements">
-                            <li>
-                                <i class="fas fa-trophy" aria-hidden="true"></i>
-                                <div>
-                                    <h4>First Prize, IIT Indore Flutter Quizmania</h4>
-                                    <p>Run by Google Developer Student Clubs (GDSC). I took part in the webinar and quiz
-                                        and finished 1st with about 9,000 points.</p>
-                                </div>
-                            </li>
-                            <li>
-                                <i class="fas fa-running" aria-hidden="true"></i>
-                                <div>
-                                    <h4>Top 10, Marathon Race</h4>
-                                    <p>Cleared every round of a race of about 25 km and finished in the top 10.</p>
-                                </div>
-                            </li>
-                        </ul>
-
-                        <h3 class="text">Certifications</h3>
-                        <ul class="certificates">
-                            <li>
-                                <a href="images/certificates/unicompiler.jpg" target="_blank" rel="noopener">
-                                    <img src="images/certificates/unicompiler-thumb.jpg" width="480" height="339" loading="lazy"
-                                         alt="UNIcompiler certificate of participation in the Web Development and Design internship">
-                                    <span>UNIcompiler: Web Dev &amp; Design</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="images/certificates/axiom-cloud.jpg" target="_blank" rel="noopener">
-                                    <img src="images/certificates/axiom-cloud-thumb.jpg" width="303" height="480" loading="lazy"
-                                         alt="Axiom Cloud Solutions certificate of internship">
-                                    <span>Axiom Cloud Solutions: Internship</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="images/certificates/linkedin-frontend.jpg" target="_blank" rel="noopener">
-                                    <img src="images/certificates/linkedin-frontend-thumb.jpg" width="480" height="371" loading="lazy"
-                                         alt="LinkedIn Learning certificate: Explore a Career in Front-End Web Development">
-                                    <span>LinkedIn Learning: Front-End Web Dev</span>
-                                </a>
-                            </li>
-                        </ul>
-
-                        <a class="btn" href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">
-                            <i class="fab fa-github" aria-hidden="true"></i> More on GitHub
-                        </a>
-                    </div>
-
-                    <div class="column right reveal">
-                        <h3 class="text">Proficiency</h3>
+        <!-- skills -->
+        <section class="section" id="skills">
+            <div class="container">
+                <header class="section-head reveal">
+                    <p class="kicker">03 &middot; Skills</p>
+                    <h2>What I work with</h2>
+                </header>
+                <div class="skill-grid">
+                    <article class="skill-card reveal">
+                        <h3><i class="fas fa-code" aria-hidden="true"></i> Languages</h3>
                         <ul class="bars">
                             <li style="--level: 90%"><div class="info"><span>Java</span><span>90%</span></div><div class="line"></div></li>
-                            <li style="--level: 90%"><div class="info"><span>Communication</span><span>90%</span></div><div class="line"></div></li>
-                            <li style="--level: 80%"><div class="info"><span>HTML</span><span>80%</span></div><div class="line"></div></li>
-                            <li style="--level: 80%"><div class="info"><span>MySQL</span><span>80%</span></div><div class="line"></div></li>
-                            <li style="--level: 75%"><div class="info"><span>Web Development</span><span>75%</span></div><div class="line"></div></li>
-                            <li style="--level: 70%"><div class="info"><span>CSS</span><span>70%</span></div><div class="line"></div></li>
                             <li style="--level: 65%"><div class="info"><span>JavaScript</span><span>65%</span></div><div class="line"></div></li>
-                            <li style="--level: 65%"><div class="info"><span>React.js</span><span>65%</span></div><div class="line"></div></li>
-                            <li style="--level: 50%"><div class="info"><span>Flutter</span><span>50%</span></div><div class="line"></div></li>
                             <li style="--level: 50%"><div class="info"><span>PHP</span><span>50%</span></div><div class="line"></div></li>
                         </ul>
-                    </div>
+                    </article>
+                    <article class="skill-card reveal">
+                        <h3><i class="fas fa-globe" aria-hidden="true"></i> Web</h3>
+                        <ul class="bars">
+                            <li style="--level: 80%"><div class="info"><span>HTML</span><span>80%</span></div><div class="line"></div></li>
+                            <li style="--level: 75%"><div class="info"><span>Web Development</span><span>75%</span></div><div class="line"></div></li>
+                            <li style="--level: 70%"><div class="info"><span>CSS</span><span>70%</span></div><div class="line"></div></li>
+                            <li style="--level: 65%"><div class="info"><span>React.js</span><span>65%</span></div><div class="line"></div></li>
+                        </ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <h3><i class="fas fa-database" aria-hidden="true"></i> Data &amp; Mobile</h3>
+                        <ul class="bars">
+                            <li style="--level: 80%"><div class="info"><span>MySQL</span><span>80%</span></div><div class="line"></div></li>
+                            <li style="--level: 50%"><div class="info"><span>Flutter</span><span>50%</span></div><div class="line"></div></li>
+                        </ul>
+                    </article>
+                    <article class="skill-card reveal">
+                        <h3><i class="fas fa-users" aria-hidden="true"></i> People</h3>
+                        <ul class="bars">
+                            <li style="--level: 90%"><div class="info"><span>Communication</span><span>90%</span></div><div class="line"></div></li>
+                        </ul>
+                        <ul class="tags" aria-label="Other strengths">
+                            <li>Project Management</li><li>Analytical Skills</li><li>Teamwork</li>
+                        </ul>
+                    </article>
                 </div>
             </div>
         </section>
 
-        <!-- projects section -->
-        <section class="projects dark" id="projects">
-            <div class="max-width">
-                <h2 class="title" data-sub="what I've built">Projects</h2>
-                <div class="card-grid">
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-id-badge" aria-hidden="true"></i>
-                        <h3 class="card-title">Personal Portfolio</h3>
-                        <p>This site. A responsive portfolio that brings together my work, experience and achievements.</p>
-                        <ul class="tags" aria-label="Built with">
-                            <li>HTML</li><li>CSS</li><li>JavaScript</li>
-                        </ul>
+        <!-- projects -->
+        <section class="section alt" id="projects">
+            <div class="container">
+                <header class="section-head reveal">
+                    <p class="kicker">04 &middot; Projects</p>
+                    <h2>What I've built</h2>
+                </header>
+                <div class="project-grid">
+                    <article class="project-card reveal" style="--hue: 350">
+                        <div class="project-art" aria-hidden="true"><i class="fas fa-id-badge"></i></div>
+                        <div class="project-body">
+                            <h3>Personal Portfolio</h3>
+                            <p>This site. A responsive portfolio with light and dark themes that brings together my work, experience and achievements.</p>
+                            <ul class="tags" aria-label="Built with"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
+                            <a class="text-link" href="https://github.com/tanishjain158/TanishPortfolio" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> Source code</a>
+                        </div>
                     </article>
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-hospital" aria-hidden="true"></i>
-                        <h3 class="card-title">Hospital Management</h3>
-                        <p>Manages patient data efficiently so hospitals can provide better care and services.</p>
+                    <article class="project-card reveal" style="--hue: 200">
+                        <div class="project-art" aria-hidden="true"><i class="fas fa-hospital"></i></div>
+                        <div class="project-body">
+                            <h3>Hospital Management</h3>
+                            <p>Manages patient data efficiently so hospitals can provide better care and services.</p>
+                        </div>
                     </article>
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-film" aria-hidden="true"></i>
-                        <h3 class="card-title">Movie App</h3>
-                        <p>A user-friendly, visually appealing site for exploring movies and learning more about them.</p>
+                    <article class="project-card reveal" style="--hue: 270">
+                        <div class="project-art" aria-hidden="true"><i class="fas fa-film"></i></div>
+                        <div class="project-body">
+                            <h3>Movie App</h3>
+                            <p>A user-friendly, visually appealing site for exploring movies and learning more about them.</p>
+                        </div>
                     </article>
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-train" aria-hidden="true"></i>
-                        <h3 class="card-title">Train Ticket Reservation</h3>
-                        <p>Lists available trains with seat availability and route (via) details.</p>
+                    <article class="project-card reveal" style="--hue: 30">
+                        <div class="project-art" aria-hidden="true"><i class="fas fa-train"></i></div>
+                        <div class="project-body">
+                            <h3>Train Ticket Reservation</h3>
+                            <p>Lists available trains with seat availability and route (via) details.</p>
+                        </div>
                     </article>
-                    <article class="card reveal">
-                        <i class="card-icon fas fa-question-circle" aria-hidden="true"></i>
-                        <h3 class="card-title">Quiz App</h3>
-                        <p>An interactive quiz that keeps score automatically, so users can focus on the questions instead of the record keeping.</p>
+                    <article class="project-card reveal" style="--hue: 150">
+                        <div class="project-art" aria-hidden="true"><i class="fas fa-question"></i></div>
+                        <div class="project-body">
+                            <h3>Quiz App</h3>
+                            <p>An interactive quiz that keeps score automatically, so users can focus on the questions instead of the record keeping.</p>
+                        </div>
                     </article>
-                    <a class="card card-link reveal" href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">
-                        <i class="card-icon fab fa-github" aria-hidden="true"></i>
-                        <span class="card-title">More on GitHub</span>
-                        <p>Browse the source code for these and other projects.</p>
+                    <a class="project-card project-more reveal" href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github" aria-hidden="true"></i>
+                        <span class="more-title">More on GitHub</span>
+                        <span class="more-sub">Browse the code for these and other projects <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- contact section -->
-        <section class="contact" id="contact">
-            <div class="max-width">
-                <h2 class="title" data-sub="get in touch">Contact me</h2>
-                <div class="contact-content">
-                    <div class="column left reveal">
-                        <h3 class="text">Get in touch</h3>
-                        <p>Life becomes a celebration when friends keep in touch, so let's celebrate by staying connected.
-                            Whether it's an opportunity, a project or just a hello, my inbox is open.</p>
-                        <ul class="icons">
-                            <li class="row">
-                                <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-                                <div class="info">
-                                    <div class="head">Location</div>
-                                    <div class="sub-title">Indore, Madhya Pradesh</div>
-                                </div>
+        <!-- achievements -->
+        <section class="section" id="achievements">
+            <div class="container">
+                <header class="section-head reveal">
+                    <p class="kicker">05 &middot; Achievements</p>
+                    <h2>Wins &amp; certifications</h2>
+                </header>
+                <div class="win-grid">
+                    <article class="win-card reveal">
+                        <span class="win-icon" aria-hidden="true"><i class="fas fa-trophy"></i></span>
+                        <div>
+                            <h3>First Prize, IIT Indore Flutter Quizmania</h3>
+                            <p>Run by Google Developer Student Clubs (GDSC). I took part in the webinar and quiz and finished 1st with about 9,000 points.</p>
+                        </div>
+                    </article>
+                    <article class="win-card reveal">
+                        <span class="win-icon" aria-hidden="true"><i class="fas fa-running"></i></span>
+                        <div>
+                            <h3>Top 10, Marathon Race</h3>
+                            <p>Cleared every round of a race of about 25 km and finished in the top 10.</p>
+                        </div>
+                    </article>
+                </div>
+
+                <h3 class="sub-head reveal">Certifications</h3>
+                <ul class="cert-grid">
+                    <li class="reveal">
+                        <a class="cert" href="images/certificates/unicompiler.jpg" data-cert="unicompiler">
+                            <img src="images/certificates/unicompiler-thumb.jpg" width="480" height="339" loading="lazy" alt="">
+                            <span class="cert-body">
+                                <strong>Web Development &amp; Design Internship</strong>
+                                <span>UNIcompiler &middot; Aug 2022</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="reveal">
+                        <a class="cert" href="images/certificates/axiom-cloud.jpg" data-cert="axiom">
+                            <img src="images/certificates/axiom-cloud-thumb.jpg" width="303" height="480" loading="lazy" alt="">
+                            <span class="cert-body">
+                                <strong>Certificate of Internship</strong>
+                                <span>Axiom Cloud Solutions &middot; Jul&ndash;Aug 2021</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="reveal">
+                        <a class="cert" href="images/certificates/linkedin-frontend.jpg" data-cert="linkedin">
+                            <img src="images/certificates/linkedin-frontend-thumb.jpg" width="480" height="371" loading="lazy" alt="">
+                            <span class="cert-body">
+                                <strong>Explore a Career in Front-End Web Development</strong>
+                                <span>LinkedIn Learning &middot; Dec 2022</span>
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- contact -->
+        <section class="section alt" id="contact">
+            <div class="container">
+                <header class="section-head reveal">
+                    <p class="kicker">06 &middot; Contact</p>
+                    <h2>Let's work together</h2>
+                </header>
+                <div class="contact-card reveal">
+                    <div class="contact-info">
+                        <h3>Get in touch</h3>
+                        <p>Life becomes a celebration when friends keep in touch. Whether it's an opportunity,
+                            a project or just a hello, my inbox is open.</p>
+                        <ul class="contact-list">
+                            <li>
+                                <span class="c-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+                                <div><span class="c-label">Email</span><a href="mailto:tanishharsh158@gmail.com">tanishharsh158@gmail.com</a></div>
                             </li>
-                            <li class="row">
-                                <i class="fas fa-envelope" aria-hidden="true"></i>
-                                <div class="info">
-                                    <div class="head">Email</div>
-                                    <a class="sub-title" href="mailto:tanishharsh158@gmail.com">tanishharsh158@gmail.com</a>
-                                </div>
+                            <li>
+                                <span class="c-icon" aria-hidden="true"><i class="fab fa-linkedin-in"></i></span>
+                                <div><span class="c-label">LinkedIn</span><a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer">in/tanish-jain-68b285217</a></div>
                             </li>
-                            <li class="row">
-                                <i class="fab fa-linkedin" aria-hidden="true"></i>
-                                <div class="info">
-                                    <div class="head">LinkedIn</div>
-                                    <a class="sub-title" href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer">in/tanish-jain-68b285217</a>
-                                </div>
+                            <li>
+                                <span class="c-icon" aria-hidden="true"><i class="fab fa-github"></i></span>
+                                <div><span class="c-label">GitHub</span><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">github.com/tanishjain158</a></div>
                             </li>
-                            <li class="row">
-                                <i class="fab fa-github" aria-hidden="true"></i>
-                                <div class="info">
-                                    <div class="head">GitHub</div>
-                                    <a class="sub-title" href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">github.com/tanishjain158</a>
-                                </div>
+                            <li>
+                                <span class="c-icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></span>
+                                <div><span class="c-label">Location</span><span>Indore, Madhya Pradesh</span></div>
                             </li>
                         </ul>
                     </div>
 
-                    <div class="column right reveal">
-                        <h3 class="text">Message me</h3>
-                        <form class="contact-form" action="mailto:tanishharsh158@gmail.com" method="post" enctype="text/plain">
-                            <div class="fields">
-                                <div class="field">
-                                    <label class="visually-hidden" for="cf-name">Name</label>
-                                    <input id="cf-name" name="name" type="text" placeholder="Name" autocomplete="name" required>
-                                </div>
-                                <div class="field">
-                                    <label class="visually-hidden" for="cf-email">Email</label>
-                                    <input id="cf-email" name="email" type="email" placeholder="Email" autocomplete="email" required>
-                                </div>
+                    <form class="contact-form" action="mailto:tanishharsh158@gmail.com" method="post" enctype="text/plain">
+                        <div class="form-row">
+                            <div class="field">
+                                <label for="cf-name">Name</label>
+                                <input id="cf-name" name="name" type="text" placeholder="Your name" autocomplete="name" required>
                             </div>
                             <div class="field">
-                                <label class="visually-hidden" for="cf-subject">Subject</label>
-                                <input id="cf-subject" name="subject" type="text" placeholder="Subject" required>
+                                <label for="cf-email">Email</label>
+                                <input id="cf-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
                             </div>
-                            <div class="field">
-                                <label class="visually-hidden" for="cf-message">Message</label>
-                                <textarea id="cf-message" name="message" rows="6" placeholder="Message..." required></textarea>
-                            </div>
-                            <div class="button-area">
-                                <button class="btn" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i> Send message</button>
-                                <p class="form-note" role="status">Opens your email app with the message ready to send.</p>
-                            </div>
-                        </form>
-                    </div>
+                        </div>
+                        <div class="field">
+                            <label for="cf-subject">Subject</label>
+                            <input id="cf-subject" name="subject" type="text" placeholder="What's it about?" required>
+                        </div>
+                        <div class="field">
+                            <label for="cf-message">Message</label>
+                            <textarea id="cf-message" name="message" rows="5" placeholder="Tell me a little about it..." required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i> Send message</button>
+                            <p class="form-note" role="status">Opens your email app with the message ready to send.</p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer>
-        <div class="social">
-            <a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin" aria-hidden="true"></i></a>
-            <a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a>
-            <a href="mailto:tanishharsh158@gmail.com" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a>
+    <footer class="footer">
+        <div class="container footer-inner">
+            <a class="logo" href="#home" aria-label="Back to top">
+                <span class="logo-badge">TJ</span>
+                <span class="logo-text">Tanish<span>.</span></span>
+            </a>
+            <ul class="footer-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <ul class="footer-social">
+                <li><a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a></li>
+                <li><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a></li>
+                <li><a href="mailto:tanishharsh158@gmail.com" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a></li>
+            </ul>
         </div>
-        <p>&copy; <span id="year">2023</span> Tanish Jain. All rights reserved.</p>
+        <p class="copyright">&copy; <span id="year">2026</span> Tanish Jain. Built with HTML, CSS &amp; JavaScript.</p>
     </footer>
 
     <button class="scroll-up-btn" type="button" aria-label="Back to top">
-        <i class="fas fa-angle-up" aria-hidden="true"></i>
+        <i class="fas fa-arrow-up" aria-hidden="true"></i>
     </button>
+
+    <dialog class="lightbox" aria-labelledby="lightbox-title">
+        <div class="lightbox-head">
+            <h2 id="lightbox-title">Certificate</h2>
+            <button class="icon-btn lightbox-close" type="button" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
+        </div>
+        <img class="lightbox-img" src="data:," alt="">
+    </dialog>
 </body>
 </html>

@@ -3,42 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanish Jain | Java &amp; Web Developer</title>
-    <meta name="description" content="Tanish Jain is a Java and web developer from Indore, India. Internships, projects, skills, certifications and contact details.">
+    <title>Tanish Jain | AI Engineer at PwC &middot; Software Engineer</title>
+    <meta name="description" content="Tanish Jain is an AI Engineer at PwC and a software engineer with 2+ years of experience building full-stack applications, data pipelines and AI features with Java, MERN, Python, GCP and AWS.">
     <meta name="author" content="Tanish Jain">
     <meta name="theme-color" content="#dc143c">
     <meta name="color-scheme" content="light dark">
 
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Tanish Jain | Java &amp; Web Developer">
-    <meta property="og:description" content="Internships, projects, skills and achievements of Tanish Jain, a Java and web developer from Indore.">
+    <meta property="og:url" content="https://tanishjain158.github.io/TanishPortfolio/">
+    <meta property="og:title" content="Tanish Jain | AI Engineer at PwC">
+    <meta property="og:description" content="Software engineer with 2+ years of experience in full-stack, data pipelines and AI. LeetCode top 10%, AWS, CCNA and Microsoft AI/ML certified.">
+    <meta property="og:image" content="https://tanishjain158.github.io/TanishPortfolio/images/profile.jpg">
 
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23dc143c'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='30' font-weight='700' fill='%23fff'%3ETJ%3C/text%3E%3C/svg%3E">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 
     <script>
-        // set JS flag + saved theme before first paint (avoids a flash of the wrong theme)
-        document.documentElement.classList.add('js');
-        try {
-            var t = localStorage.getItem('theme');
-            if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
-        } catch (e) {}
+        // Before first paint: JS flag, saved theme, and whether to play the intro.
+        (function () {
+            var root = document.documentElement;
+            root.classList.add('js');
+            try {
+                var t = localStorage.getItem('theme');
+                if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t);
+            } catch (e) {}
+            var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var seen = false;
+            try { seen = sessionStorage.getItem('introSeen') === '1'; sessionStorage.setItem('introSeen', '1'); } catch (e) {}
+            root.classList.add(reduce || seen ? 'no-intro' : 'with-intro');
+        })();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.11/typed.min.js" defer></script>
     <script src="script.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <div class="progress" aria-hidden="true"><span></span></div>
+
+    <!-- intro: pure CSS timeline, removes itself even if JS fails -->
+    <div class="intro" aria-hidden="true">
+        <div class="intro-panel intro-top"></div>
+        <div class="intro-panel intro-bottom"></div>
+        <div class="intro-center">
+            <svg class="intro-mark" viewBox="0 0 120 120">
+                <rect x="6" y="6" width="108" height="108" rx="28" pathLength="1"></rect>
+            </svg>
+            <span class="intro-tj">TJ</span>
+            <span class="intro-name">Tanish Jain</span>
+        </div>
+    </div>
+
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true"></div>
 
     <header class="navbar">
         <div class="container nav-inner">
-            <a class="logo" href="#home" aria-label="Tanish Jain, home">
+            <a class="logo" href="#home" aria-label="Tanish Jain, back to top">
                 <span class="logo-badge">TJ</span>
                 <span class="logo-text">Tanish<span>.</span></span>
             </a>
@@ -46,358 +70,670 @@
                 <ul class="menu" id="menu">
                     <li><a href="#about">About</a></li>
                     <li><a href="#experience">Experience</a></li>
-                    <li><a href="#skills">Skills</a></li>
                     <li><a href="#projects">Projects</a></li>
+                    <li><a href="#skills">Skills</a></li>
                     <li><a href="#achievements">Achievements</a></li>
                     <li><a href="#contact">Contact</a></li>
+                    <li class="menu-resume"><a href="Tanish_Jain_Resume.pdf" target="_blank" rel="noopener">Resume</a></li>
                 </ul>
             </nav>
             <div class="nav-actions">
+                <button class="icon-btn palette-btn" type="button" aria-label="Open command palette (Ctrl+K)" title="Command palette (Ctrl+K)">
+                    <i class="fas fa-search" aria-hidden="true"></i><kbd>Ctrl K</kbd>
+                </button>
                 <button class="icon-btn theme-toggle" type="button" aria-label="Switch to dark theme">
                     <i class="fas fa-moon" aria-hidden="true"></i>
                 </button>
+                <a class="btn btn-sm nav-resume magnetic" href="Tanish_Jain_Resume.pdf" target="_blank" rel="noopener">
+                    <i class="fas fa-file-alt" aria-hidden="true"></i> Resume
+                </a>
                 <button class="icon-btn menu-btn" type="button" aria-label="Open menu" aria-controls="menu" aria-expanded="false">
-                    <i class="fas fa-bars" aria-hidden="true"></i>
+                    <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
                 </button>
             </div>
         </div>
     </header>
 
     <main id="main">
-        <!-- hero -->
-        <section class="home" id="home">
-            <div class="container home-inner">
-                <div class="home-content">
-                    <p class="eyebrow">&lt;hello world /&gt;</p>
-                    <h1 class="home-title">I'm <span class="grad">Tanish Jain</span></h1>
-                    <p class="home-role">
-                        <span class="visually-hidden">Java Developer, Web Developer, Full Stack Developer, Project Manager and Singer.</span>
-                        <span aria-hidden="true">A <span class="typing">Java Developer</span></span>
+        <!-- ================= HERO ================= -->
+        <section class="hero" id="home">
+            <canvas class="hero-canvas" aria-hidden="true"></canvas>
+            <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="hero-grid" aria-hidden="true"></div>
+            <div class="hero-spotlight" aria-hidden="true"></div>
+
+            <div class="container hero-inner">
+                <div class="hero-copy">
+                    <p class="status-pill hero-in" style="--d: 0">
+                        <span class="pulse" aria-hidden="true"></span>
+                        Currently <strong>AI Engineer @ PwC</strong>
                     </p>
-                    <p class="home-lead">I build clean, reliable software with Java and the web, from front-end
-                        interfaces to databases, and I'm always learning something new.</p>
-                    <div class="home-actions">
-                        <a class="btn" href="#contact"><i class="fas fa-paper-plane" aria-hidden="true"></i> Hire me</a>
-                        <a class="btn btn-ghost" href="#projects">See my work <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                    <h1 class="hero-name">
+                        <span class="hero-hi hero-in" style="--d: 1">Hi, I'm</span>
+                        <span class="split-letters" data-split>Tanish</span>
+                        <span class="split-letters grad-text" data-split>Jain</span>
+                    </h1>
+                    <p class="hero-role hero-in" style="--d: 5">
+                        <span class="role-prefix" aria-hidden="true">&gt;_</span>
+                        <span class="visually-hidden">AI Engineer, Software Engineer, Full-Stack Developer and Data Pipeline Engineer.</span>
+                        <span class="typer" aria-hidden="true" data-words='["AI Engineer", "Software Engineer", "Full-Stack Developer", "Data Pipeline Engineer", "Java & MERN Developer"]'>AI Engineer</span><span class="caret" aria-hidden="true"></span>
+                    </p>
+                    <p class="hero-lead hero-in" style="--d: 6">
+                        I design and scale full-stack applications, data pipelines and AI features with
+                        <strong>Java</strong>, the <strong>MERN</strong> stack, <strong>Python</strong> and REST APIs on
+                        <strong>GCP</strong> and <strong>AWS</strong>, and I care about impact you can measure.
+                    </p>
+                    <div class="hero-cta hero-in" style="--d: 7">
+                        <a class="btn magnetic" href="#projects"><span>Explore my work</span> <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                        <a class="btn btn-glass magnetic" href="Tanish_Jain_Resume.pdf" target="_blank" rel="noopener"><i class="fas fa-download" aria-hidden="true"></i> <span>Resume</span></a>
                     </div>
-                    <ul class="home-social">
-                        <li><a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a></li>
-                        <li><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a></li>
-                        <li><a href="mailto:tanishharsh158@gmail.com" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a></li>
+                    <ul class="hero-proof hero-in" style="--d: 8" aria-label="Highlights">
+                        <li><i class="fas fa-code" aria-hidden="true"></i> LeetCode top 10%</li>
+                        <li><i class="fas fa-graduation-cap" aria-hidden="true"></i> CGPA 9.14</li>
+                        <li><i class="fab fa-aws" aria-hidden="true"></i> AWS</li>
+                        <li><i class="fas fa-network-wired" aria-hidden="true"></i> CCNA</li>
+                        <li><i class="fab fa-microsoft" aria-hidden="true"></i> AI/ML</li>
                     </ul>
                 </div>
+
+                <div class="hero-visual hero-in" style="--d: 4" aria-hidden="true">
+                    <div class="orbit orbit-1"></div>
+                    <div class="orbit orbit-2"></div>
+                    <div class="globe" data-tags='["Java","Python","React","Next.js","Node.js","MongoDB","Kafka","Spark","GCP","AWS","Docker","Kubernetes","TypeScript","Spring Boot","Django","BigQuery","Airflow","PostgreSQL","C++","REST APIs","Gemini API","Machine Learning","Microservices","CI/CD"]'></div>
+                    <div class="float-card fc-1"><span class="fc-num">1737</span><span class="fc-label">LeetCode rating</span></div>
+                    <div class="float-card fc-2"><span class="fc-num">700+</span><span class="fc-label">DSA problems</span></div>
+                    <div class="float-card fc-3"><span class="fc-num">2+ yrs</span><span class="fc-label">shipping to production</span></div>
+                </div>
             </div>
-            <a class="scroll-hint" href="#about" aria-label="Scroll to About section">
+
+            <a class="scroll-cue" href="#about" aria-label="Scroll to About section">
                 <span class="mouse" aria-hidden="true"></span>
+                <span class="scroll-text" aria-hidden="true">scroll</span>
             </a>
         </section>
 
-        <!-- about -->
+        <!-- ================= ABOUT ================= -->
         <section class="section" id="about">
             <div class="container">
-                <header class="section-head reveal">
-                    <p class="kicker">01 &middot; About</p>
-                    <h2>Who I am</h2>
+                <header class="section-head" data-reveal>
+                    <p class="kicker"><span>01</span> About</p>
+                    <h2 data-split-words>Engineering reliable software, data pipelines and AI</h2>
                 </header>
+
                 <div class="about-grid">
-                    <figure class="about-photo reveal">
-                        <img src="images/profile.jpg" alt="Portrait of Tanish Jain" width="800" height="1067" loading="lazy">
-                        <figcaption class="photo-tag"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Indore, India</figcaption>
-                    </figure>
-                    <div class="about-text reveal">
-                        <h3>A tech enthusiast who loves <span class="accent">clean code</span> and <span class="accent">colourful interfaces</span>.</h3>
-                        <p>I'm comfortable across the stack: I use object-oriented programming and data structures
-                            to write maintainable software, I work with a range of technologies and tools, and I
-                            manage databases. I've interned in front-end development, Java development and
-                            machine learning, and I enjoy leading projects as much as coding them.</p>
-                        <ul class="stats">
-                            <li><strong data-count="3">3</strong><span>Internships</span></li>
-                            <li><strong data-count="5">5</strong><span>Projects</span></li>
-                            <li><strong data-count="3">3</strong><span>Certifications</span></li>
-                            <li><strong>1st</strong><span>GDSC Quizmania</span></li>
+                    <div class="about-media" data-reveal="left">
+                        <div class="photo-frame parallax" data-speed="0.06">
+                            <div class="photo-ring" aria-hidden="true"></div>
+                            <img src="images/profile.jpg" alt="Portrait of Tanish Jain" width="800" height="1067" loading="lazy">
+                        </div>
+                        <div class="photo-badge pb-1"><i class="fas fa-briefcase" aria-hidden="true"></i><span><strong>AI Engineer</strong> at PwC</span></div>
+                        <div class="photo-badge pb-2"><i class="fas fa-map-marker-alt" aria-hidden="true"></i><span>Indore, India</span></div>
+                    </div>
+
+                    <div class="about-copy" data-reveal="right">
+                        <p class="lead">I'm an <mark>AI Engineer at PwC</mark> and a software engineer with <mark>2+ years</mark> of
+                            experience designing and scaling full-stack applications with Java, the MERN stack, Python and
+                            REST APIs on GCP and AWS.</p>
+                        <p>My work has delivered measurable impact in production: <strong>40% faster data ingestion</strong>,
+                            a <strong>30% improvement in ML model accuracy</strong> and a <strong>90% reduction in security
+                            incidents</strong>. I work with distributed data technologies like Apache Kafka, Spark, Hive, HBase
+                            and BigQuery, and I have strong DSA fundamentals: a 1737 LeetCode rating (top 10% globally) with
+                            700+ problems solved.</p>
+                        <ul class="info-list">
+                            <li><i class="fas fa-graduation-cap" aria-hidden="true"></i><div><span>Education</span>B.Tech Computer Science, Medi-Caps University</div></li>
+                            <li><i class="fas fa-certificate" aria-hidden="true"></i><div><span>Certified</span>AWS &middot; Cisco CCNA &middot; Microsoft AI &amp; ML</div></li>
+                            <li><i class="fas fa-envelope" aria-hidden="true"></i><div><span>Email</span><a href="mailto:tanishharsh158@gmail.com">tanishharsh158@gmail.com</a></div></li>
+                            <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i><div><span>Based in</span>Indore, India</div></li>
                         </ul>
-                        <div class="about-actions">
-                            <a class="btn" href="https://drive.google.com/file/d/181rwQDIQmCbTcsAJp9cvVajt9WE7OnSk/view?usp=drivesdk" target="_blank" rel="noopener noreferrer">
-                                <i class="fas fa-file-download" aria-hidden="true"></i> Download resume
-                            </a>
-                            <a class="btn btn-outline" href="#contact">Let's talk</a>
+                        <div class="about-cta">
+                            <a class="btn magnetic" href="Tanish_Jain_Resume.pdf" target="_blank" rel="noopener"><i class="fas fa-file-download" aria-hidden="true"></i> Download resume</a>
+                            <a class="btn btn-outline magnetic" href="#contact">Let's talk</a>
                         </div>
                     </div>
                 </div>
+
+                <ul class="stat-band" data-reveal>
+                    <li><strong><span data-count="2">2</span>+</strong><span>Years of experience</span></li>
+                    <li><strong><span data-count="700">700</span>+</strong><span>LeetCode problems</span></li>
+                    <li><strong><span data-count="1737">1737</span></strong><span>LeetCode rating</span></li>
+                    <li><strong><span data-count="9.14" data-decimals="2">9.14</span></strong><span>CGPA</span></li>
+                    <li><strong><span data-count="1000" data-format="comma">1,000</span>+</strong><span>Users in 30 days</span></li>
+                </ul>
             </div>
         </section>
 
-        <!-- experience -->
+        <!-- ================= EXPERIENCE ================= -->
         <section class="section alt" id="experience">
             <div class="container">
-                <header class="section-head reveal">
-                    <p class="kicker">02 &middot; Experience</p>
-                    <h2>Where I've worked</h2>
+                <header class="section-head" data-reveal>
+                    <p class="kicker"><span>02</span> Experience</p>
+                    <h2 data-split-words>Where I've shipped real impact</h2>
                 </header>
-                <ol class="timeline">
-                    <li class="timeline-item reveal">
-                        <span class="timeline-dot" aria-hidden="true"><i class="fas fa-laptop-code"></i></span>
-                        <article class="timeline-card">
-                            <div class="timeline-top">
-                                <div>
-                                    <h3>Front-End Developer Intern</h3>
-                                    <p class="company">UNIcompiler</p>
-                                </div>
-                                <span class="badge">Web Dev &amp; Design</span>
-                            </div>
-                            <p>Delivered assigned front-end tasks, tracked down and fixed errors and bugs, and helped the team hit its goals.</p>
-                            <ul class="tags" aria-label="Skills used">
-                                <li>HTML</li><li>CSS</li><li>JavaScript</li><li>React.js</li>
-                            </ul>
-                            <button class="text-link" type="button" data-cert="unicompiler"><i class="fas fa-certificate" aria-hidden="true"></i> View certificate</button>
-                        </article>
-                    </li>
-                    <li class="timeline-item reveal">
-                        <span class="timeline-dot" aria-hidden="true"><i class="fab fa-java"></i></span>
-                        <article class="timeline-card">
-                            <div class="timeline-top">
-                                <div>
-                                    <h3>Java Developer Intern</h3>
-                                    <p class="company">Oasis Infobyte</p>
-                                </div>
-                                <span class="badge">Java</span>
-                            </div>
-                            <p>Java development internship that also involved handling project management for the team.</p>
-                            <ul class="tags" aria-label="Skills used">
-                                <li>Java</li><li>Competitive Programming</li><li>Analytical Skills</li>
-                            </ul>
-                        </article>
-                    </li>
-                    <li class="timeline-item reveal">
-                        <span class="timeline-dot" aria-hidden="true"><i class="fas fa-brain"></i></span>
-                        <article class="timeline-card">
-                            <div class="timeline-top">
-                                <div>
-                                    <h3>Data Science &amp; ML Intern</h3>
-                                    <p class="company">Axiom Cloud Solutions</p>
-                                </div>
-                                <span class="badge">Machine Learning</span>
-                            </div>
-                            <p>Built a cancer prediction project using a real-world dataset and machine learning techniques.</p>
-                            <ul class="tags" aria-label="Skills used">
-                                <li>Python</li><li>Data Science</li><li>Machine Learning</li>
-                            </ul>
-                            <button class="text-link" type="button" data-cert="axiom"><i class="fas fa-certificate" aria-hidden="true"></i> View certificate</button>
-                        </article>
-                    </li>
-                </ol>
-            </div>
-        </section>
 
-        <!-- skills -->
-        <section class="section" id="skills">
-            <div class="container">
-                <header class="section-head reveal">
-                    <p class="kicker">03 &middot; Skills</p>
-                    <h2>What I work with</h2>
-                </header>
-                <div class="skill-grid">
-                    <article class="skill-card reveal">
-                        <h3><i class="fas fa-code" aria-hidden="true"></i> Languages</h3>
-                        <ul class="bars">
-                            <li style="--level: 90%"><div class="info"><span>Java</span><span>90%</span></div><div class="line"></div></li>
-                            <li style="--level: 65%"><div class="info"><span>JavaScript</span><span>65%</span></div><div class="line"></div></li>
-                            <li style="--level: 50%"><div class="info"><span>PHP</span><span>50%</span></div><div class="line"></div></li>
-                        </ul>
-                    </article>
-                    <article class="skill-card reveal">
-                        <h3><i class="fas fa-globe" aria-hidden="true"></i> Web</h3>
-                        <ul class="bars">
-                            <li style="--level: 80%"><div class="info"><span>HTML</span><span>80%</span></div><div class="line"></div></li>
-                            <li style="--level: 75%"><div class="info"><span>Web Development</span><span>75%</span></div><div class="line"></div></li>
-                            <li style="--level: 70%"><div class="info"><span>CSS</span><span>70%</span></div><div class="line"></div></li>
-                            <li style="--level: 65%"><div class="info"><span>React.js</span><span>65%</span></div><div class="line"></div></li>
-                        </ul>
-                    </article>
-                    <article class="skill-card reveal">
-                        <h3><i class="fas fa-database" aria-hidden="true"></i> Data &amp; Mobile</h3>
-                        <ul class="bars">
-                            <li style="--level: 80%"><div class="info"><span>MySQL</span><span>80%</span></div><div class="line"></div></li>
-                            <li style="--level: 50%"><div class="info"><span>Flutter</span><span>50%</span></div><div class="line"></div></li>
-                        </ul>
-                    </article>
-                    <article class="skill-card reveal">
-                        <h3><i class="fas fa-users" aria-hidden="true"></i> People</h3>
-                        <ul class="bars">
-                            <li style="--level: 90%"><div class="info"><span>Communication</span><span>90%</span></div><div class="line"></div></li>
-                        </ul>
-                        <ul class="tags" aria-label="Other strengths">
-                            <li>Project Management</li><li>Analytical Skills</li><li>Teamwork</li>
-                        </ul>
-                    </article>
+                <ul class="impact-grid">
+                    <li class="impact tilt" data-reveal><strong><span data-count="40">40</span>%</strong><span>faster data ingestion with a Kafka streaming pipeline</span></li>
+                    <li class="impact tilt" data-reveal><strong><span data-count="30">30</span>%</strong><span>boost in ML forecasting accuracy and efficiency</span></li>
+                    <li class="impact tilt" data-reveal><strong><span data-count="90">90</span>%</strong><span>fewer unauthorized-access incidents in production</span></li>
+                    <li class="impact tilt" data-reveal><strong><span data-count="100">100</span>+</strong><span>critical issues resolved across concurrent projects</span></li>
+                </ul>
+
+                <div class="timeline">
+                    <div class="tl-track" aria-hidden="true"><div class="tl-fill"></div></div>
+                    <ol class="tl-list">
+                        <li class="tl-item" data-reveal>
+                            <span class="tl-node" aria-hidden="true">PwC</span>
+                            <article class="tl-card tilt">
+                                <header class="tl-head">
+                                    <div>
+                                        <h3>AI Engineer</h3>
+                                        <p class="tl-company">PwC</p>
+                                    </div>
+                                    <div class="tl-meta">
+                                        <span class="live-badge"><span class="pulse" aria-hidden="true"></span> Current</span>
+                                        <span><i class="far fa-calendar" aria-hidden="true"></i> 2026 &ndash; Present</span>
+                                    </div>
+                                </header>
+                                <p class="tl-desc">My current role. I'm working as an AI Engineer at PwC.</p>
+                            </article>
+                        </li>
+                        <li class="tl-item" data-reveal>
+                            <span class="tl-node" aria-hidden="true">MY</span>
+                            <article class="tl-card tilt">
+                                <header class="tl-head">
+                                    <div>
+                                        <h3>Network Engineer</h3>
+                                        <p class="tl-company">Moreyeahs Pvt. Limited</p>
+                                    </div>
+                                    <div class="tl-meta">
+                                        <span><i class="far fa-calendar" aria-hidden="true"></i> Mar 2026 &ndash; Apr 2026</span>
+                                        <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Indore</span>
+                                    </div>
+                                </header>
+                                <ul class="tl-points">
+                                    <li>Automated end-to-end workflow pipelines with Make.com and multi-API integrations, cutting manual overhead across 3 cross-functional teams.</li>
+                                    <li>Hardened authentication through secure API integration, <strong>reducing unauthorized access incidents by 90%</strong> in production.</li>
+                                    <li>Resolved <strong>100+ critical issues</strong> across concurrent projects, improving system stability, maintenance turnaround and MTTR with Python, JavaScript and JSON.</li>
+                                </ul>
+                                <ul class="chips" aria-label="Tech used"><li>Make.com</li><li>API Security</li><li>Python</li><li>JavaScript</li><li>JSON</li></ul>
+                            </article>
+                        </li>
+                        <li class="tl-item" data-reveal>
+                            <span class="tl-node" aria-hidden="true">iE</span>
+                            <article class="tl-card tilt">
+                                <header class="tl-head">
+                                    <div>
+                                        <h3>Junior Software Engineer</h3>
+                                        <p class="tl-company">iEnergizer IT Solutions</p>
+                                    </div>
+                                    <div class="tl-meta">
+                                        <span><i class="far fa-calendar" aria-hidden="true"></i> Feb 2025 &ndash; Aug 2025</span>
+                                        <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Noida / Gurugram</span>
+                                    </div>
+                                </header>
+                                <ul class="tl-points">
+                                    <li>Built a full-stack MERN data visualization platform delivering real-time ML test results and forecast vs. actuals to stakeholders.</li>
+                                    <li>Refactored a Python ML forecasting scheduler, <strong>boosting model accuracy and operational efficiency by 30%</strong>.</li>
+                                    <li>Integrated external APIs, resolving 20+ deployment errors, and managed CI/CD pipelines, QA checks and database integrity for 2 high-traffic production projects.</li>
+                                </ul>
+                                <ul class="chips" aria-label="Tech used"><li>MongoDB</li><li>Express</li><li>React</li><li>Node.js</li><li>Python</li><li>Machine Learning</li><li>CI/CD</li></ul>
+                            </article>
+                        </li>
+                        <li class="tl-item" data-reveal>
+                            <span class="tl-node" aria-hidden="true">GS</span>
+                            <article class="tl-card tilt">
+                                <header class="tl-head">
+                                    <div>
+                                        <h3>Software Development Engineer</h3>
+                                        <p class="tl-company">Growwstacks Automation Solutions</p>
+                                    </div>
+                                    <div class="tl-meta">
+                                        <span><i class="far fa-calendar" aria-hidden="true"></i> Jan 2024 &ndash; Nov 2024</span>
+                                        <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Indore</span>
+                                    </div>
+                                </header>
+                                <ul class="tl-points">
+                                    <li>Shipped an automated daily unit testing framework, strengthening code quality and speeding up bug detection for the engineering team.</li>
+                                    <li>Turned cross-platform integration requirements into a centralized API aggregating event data from <strong>5+ external platforms</strong>, eliminating redundant integrations.</li>
+                                    <li>Engineered a GCP data pipeline (BigQuery, Cloud Storage, Python), <strong>reducing data ingestion time by 30%</strong> and improving pipeline integrity.</li>
+                                </ul>
+                                <ul class="chips" aria-label="Tech used"><li>GCP</li><li>BigQuery</li><li>Cloud Storage</li><li>Python</li><li>REST APIs</li><li>Unit Testing</li></ul>
+                            </article>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="interns" data-reveal>
+                    <h3 class="sub-head"><i class="fas fa-seedling" aria-hidden="true"></i> Internships during college</h3>
+                    <ul class="intern-grid">
+                        <li class="intern tilt">
+                            <p class="intern-role">Front-End Developer Intern</p>
+                            <p class="intern-co">UNIcompiler &middot; 2022</p>
+                            <p>Front-end tasks, bug fixing and delivery goals with HTML, CSS, JavaScript and React.</p>
+                            <button class="text-link" type="button" data-cert="unicompiler"><i class="fas fa-certificate" aria-hidden="true"></i> Certificate</button>
+                        </li>
+                        <li class="intern tilt">
+                            <p class="intern-role">Data Science &amp; ML Intern</p>
+                            <p class="intern-co">Axiom Cloud Solutions &middot; 2021</p>
+                            <p>Built a cancer prediction project on a real-world dataset using machine learning and Python.</p>
+                            <button class="text-link" type="button" data-cert="axiom"><i class="fas fa-certificate" aria-hidden="true"></i> Certificate</button>
+                        </li>
+                        <li class="intern tilt">
+                            <p class="intern-role">Java Developer Intern</p>
+                            <p class="intern-co">Oasis Infobyte</p>
+                            <p>Java development internship that also involved project management for the team.</p>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <!-- projects -->
-        <section class="section alt" id="projects">
+        <!-- ================= PROJECTS ================= -->
+        <section class="section" id="projects">
             <div class="container">
-                <header class="section-head reveal">
-                    <p class="kicker">04 &middot; Projects</p>
-                    <h2>What I've built</h2>
+                <header class="section-head" data-reveal>
+                    <p class="kicker"><span>03</span> Projects</p>
+                    <h2 data-split-words>Things I've designed and built</h2>
                 </header>
+
                 <div class="project-grid">
-                    <article class="project-card reveal" style="--hue: 350">
-                        <div class="project-art" aria-hidden="true"><i class="fas fa-id-badge"></i></div>
+                    <!-- 1 -->
+                    <article class="project glow-border tilt" data-reveal>
+                        <div class="project-visual pv-review" aria-hidden="true">
+                            <div class="mini-window">
+                                <div class="mw-bar"><i></i><i></i><i></i><span>review.js</span></div>
+                                <div class="code-lines">
+                                    <span style="--w: 62%"></span><span style="--w: 80%" class="hl"></span><span style="--w: 45%"></span><span style="--w: 70%"></span><span style="--w: 35%"></span>
+                                </div>
+                                <div class="review-bubble"><i class="fas fa-robot"></i> O(n&sup2;) loop: try a hash map</div>
+                            </div>
+                        </div>
                         <div class="project-body">
-                            <h3>Personal Portfolio</h3>
-                            <p>This site. A responsive portfolio with light and dark themes that brings together my work, experience and achievements.</p>
-                            <ul class="tags" aria-label="Built with"><li>HTML</li><li>CSS</li><li>JavaScript</li></ul>
-                            <a class="text-link" href="https://github.com/tanishjain158/TanishPortfolio" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> Source code</a>
+                            <p class="project-num">01 &middot; AI</p>
+                            <h3>AI-Powered Code Review Engine</h3>
+                            <ul class="project-points">
+                                <li>AI code review engine on the Gemini API that gives multi-faceted feedback on algorithmic complexity, logic errors and coding standards.</li>
+                                <li>Optimized RESTful API routing and CORS on Render for <strong>sub-100 ms responses</strong> with stable production performance.</li>
+                            </ul>
+                            <ul class="chips" aria-label="Built with"><li>MongoDB</li><li>Express</li><li>React</li><li>Node.js</li><li>Gemini API</li><li>Render</li></ul>
+                            <div class="project-links">
+                                <a class="text-link" href="https://hiring-search.careerflow.ai/" target="_blank" rel="noopener noreferrer">Live project <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </article>
-                    <article class="project-card reveal" style="--hue: 200">
-                        <div class="project-art" aria-hidden="true"><i class="fas fa-hospital"></i></div>
+
+                    <!-- 2 -->
+                    <article class="project glow-border tilt" data-reveal>
+                        <div class="project-visual pv-chart" aria-hidden="true">
+                            <svg viewBox="0 0 300 150" preserveAspectRatio="none">
+                                <defs>
+                                    <linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+                                        <stop offset="0%" stop-color="#ff4d6d" stop-opacity="0.55"></stop>
+                                        <stop offset="100%" stop-color="#ff4d6d" stop-opacity="0"></stop>
+                                    </linearGradient>
+                                </defs>
+                                <g class="chart-bars">
+                                    <rect x="14" y="96" width="18" height="44" rx="3"></rect><rect x="48" y="80" width="18" height="60" rx="3"></rect>
+                                    <rect x="82" y="88" width="18" height="52" rx="3"></rect><rect x="116" y="62" width="18" height="78" rx="3"></rect>
+                                    <rect x="150" y="70" width="18" height="70" rx="3"></rect><rect x="184" y="44" width="18" height="96" rx="3"></rect>
+                                    <rect x="218" y="54" width="18" height="86" rx="3"></rect><rect x="252" y="28" width="18" height="112" rx="3"></rect>
+                                </g>
+                                <path class="chart-area" d="M0 120 C 40 110, 60 90, 100 95 S 160 60, 200 58 S 260 30, 300 22 L 300 150 L 0 150 Z"></path>
+                                <path class="chart-line" pathLength="1" d="M0 120 C 40 110, 60 90, 100 95 S 160 60, 200 58 S 260 30, 300 22"></path>
+                            </svg>
+                            <span class="chart-tag">+40% ingestion speed</span>
+                        </div>
                         <div class="project-body">
-                            <h3>Hospital Management</h3>
-                            <p>Manages patient data efficiently so hospitals can provide better care and services.</p>
+                            <p class="project-num">02 &middot; Data</p>
+                            <h3>Data Visualization: COVID-19</h3>
+                            <ul class="project-points">
+                                <li>Optimized a streaming pipeline with Apache Kafka for <strong>40% faster data ingestion</strong> and a 25% cut in processing time.</li>
+                                <li>Engineered a distributed data pipeline with Apache Spark, Hive and HBase, <strong>boosting processing efficiency by 30%</strong>.</li>
+                            </ul>
+                            <ul class="chips" aria-label="Built with"><li>Next.js</li><li>Apache Kafka</li><li>Spark</li><li>Hive</li><li>HBase</li><li>GetStream</li><li>Clerk</li><li>Tailwind CSS</li></ul>
+                            <div class="project-links">
+                                <a class="text-link" href="https://covid19-dash.github.io/" target="_blank" rel="noopener noreferrer">Live dashboard <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </article>
-                    <article class="project-card reveal" style="--hue: 270">
-                        <div class="project-art" aria-hidden="true"><i class="fas fa-film"></i></div>
+
+                    <!-- 3 -->
+                    <article class="project glow-border tilt" data-reveal>
+                        <div class="project-visual pv-game" aria-hidden="true">
+                            <div class="ttt">
+                                <span class="x" style="--o: 0"></span><span></span><span class="o" style="--o: 3"></span>
+                                <span></span><span class="x" style="--o: 1"></span><span class="o" style="--o: 4"></span>
+                                <span class="o" style="--o: 2"></span><span></span><span class="x" style="--o: 5"></span>
+                            </div>
+                            <span class="minimax">minimax(depth, &alpha;, &beta;)</span>
+                        </div>
                         <div class="project-body">
-                            <h3>Movie App</h3>
-                            <p>A user-friendly, visually appealing site for exploring movies and learning more about them.</p>
+                            <p class="project-num">03 &middot; Web</p>
+                            <h3>Board Game Inc.</h3>
+                            <ul class="project-points">
+                                <li>Client-side game logic for Sudoku, Tic-Tac-Toe and Othello using recursion and Minimax search.</li>
+                                <li>Drove <strong>1,000+ unique user sessions</strong> in the first 30 days after launch.</li>
+                            </ul>
+                            <ul class="chips" aria-label="Built with"><li>Next.js</li><li>React</li><li>Tailwind CSS</li><li>Stripe</li><li>MongoDB</li></ul>
+                            <div class="project-links">
+                                <a class="text-link" href="https://chimerical-hummingbird-a213c6.netlify.app/" target="_blank" rel="noopener noreferrer">Play it live <i class="fas fa-external-link-alt" aria-hidden="true"></i></a>
+                            </div>
                         </div>
                     </article>
-                    <article class="project-card reveal" style="--hue: 30">
-                        <div class="project-art" aria-hidden="true"><i class="fas fa-train"></i></div>
+
+                    <!-- 4 -->
+                    <article class="project glow-border tilt" data-reveal>
+                        <div class="project-visual pv-site" aria-hidden="true">
+                            <div class="mini-browser">
+                                <div class="mw-bar"><i></i><i></i><i></i><span>tanishjain158.github.io</span></div>
+                                <div class="mb-body">
+                                    <span class="mb-title"></span><span class="mb-line"></span><span class="mb-line short"></span>
+                                    <div class="mb-cards"><span></span><span></span><span></span></div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="project-body">
-                            <h3>Train Ticket Reservation</h3>
-                            <p>Lists available trains with seat availability and route (via) details.</p>
+                            <p class="project-num">04 &middot; Web</p>
+                            <h3>Portfolio</h3>
+                            <ul class="project-points">
+                                <li>The site you're on: an animated, themeable showcase of my skills, experience and projects.</li>
+                                <li>Backed by a GCP data pipeline (BigQuery, Cloud Storage, Python) for backend data integrity.</li>
+                            </ul>
+                            <ul class="chips" aria-label="Built with"><li>HTML</li><li>CSS</li><li>JavaScript</li><li>GCP</li><li>BigQuery</li></ul>
+                            <div class="project-links">
+                                <a class="text-link" href="https://github.com/tanishjain158/TanishPortfolio" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> Source code</a>
+                            </div>
                         </div>
                     </article>
-                    <article class="project-card reveal" style="--hue: 150">
-                        <div class="project-art" aria-hidden="true"><i class="fas fa-question"></i></div>
-                        <div class="project-body">
-                            <h3>Quiz App</h3>
-                            <p>An interactive quiz that keeps score automatically, so users can focus on the questions instead of the record keeping.</p>
-                        </div>
-                    </article>
-                    <a class="project-card project-more reveal" href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">
-                        <i class="fab fa-github" aria-hidden="true"></i>
-                        <span class="more-title">More on GitHub</span>
-                        <span class="more-sub">Browse the code for these and other projects <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
-                    </a>
+                </div>
+
+                <div class="more-work" data-reveal>
+                    <a class="btn btn-outline magnetic" href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer"><i class="fab fa-github" aria-hidden="true"></i> More on GitHub</a>
                 </div>
             </div>
         </section>
 
-        <!-- achievements -->
+        <!-- ================= SKILLS ================= -->
+        <section class="section alt" id="skills">
+            <div class="container">
+                <header class="section-head" data-reveal>
+                    <p class="kicker"><span>04</span> Skills</p>
+                    <h2 data-split-words>My technical toolkit</h2>
+                </header>
+            </div>
+
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee-track">
+                    <span class="logo-tile"><img src="images/tech/java.svg" alt="" width="40" height="40">Java</span>
+                    <span class="logo-tile"><img src="images/tech/python.svg" alt="" width="40" height="40">Python</span>
+                    <span class="logo-tile"><img src="images/tech/javascript.svg" alt="" width="40" height="40">JavaScript</span>
+                    <span class="logo-tile"><img src="images/tech/typescript.svg" alt="" width="40" height="40">TypeScript</span>
+                    <span class="logo-tile"><img src="images/tech/react.svg" alt="" width="40" height="40">React</span>
+                    <span class="logo-tile"><img src="images/tech/nextjs.svg" alt="" width="40" height="40">Next.js</span>
+                    <span class="logo-tile"><img src="images/tech/nodejs.svg" alt="" width="40" height="40">Node.js</span>
+                    <span class="logo-tile"><img src="images/tech/mongodb.svg" alt="" width="40" height="40">MongoDB</span>
+                    <span class="logo-tile"><img src="images/tech/spring.svg" alt="" width="40" height="40">Spring Boot</span>
+                    <span class="logo-tile"><img src="images/tech/django.svg" alt="" width="40" height="40">Django</span>
+                    <span class="logo-tile"><img src="images/tech/postgresql.svg" alt="" width="40" height="40">PostgreSQL</span>
+                    <span class="logo-tile"><img src="images/tech/mysql.svg" alt="" width="40" height="40">MySQL</span>
+                </div>
+            </div>
+            <div class="marquee reverse" aria-hidden="true">
+                <div class="marquee-track">
+                    <span class="logo-tile"><img src="images/tech/gcp.svg" alt="" width="40" height="40">Google Cloud</span>
+                    <span class="logo-tile"><img src="images/tech/aws.svg" alt="" width="40" height="40">AWS</span>
+                    <span class="logo-tile"><img src="images/tech/docker.svg" alt="" width="40" height="40">Docker</span>
+                    <span class="logo-tile"><img src="images/tech/kubernetes.svg" alt="" width="40" height="40">Kubernetes</span>
+                    <span class="logo-tile"><img src="images/tech/kafka.svg" alt="" width="40" height="40">Kafka</span>
+                    <span class="logo-tile"><img src="images/tech/spark.svg" alt="" width="40" height="40">Spark</span>
+                    <span class="logo-tile"><img src="images/tech/airflow.svg" alt="" width="40" height="40">Airflow</span>
+                    <span class="logo-tile"><img src="images/tech/hadoop.svg" alt="" width="40" height="40">Hive &amp; HBase</span>
+                    <span class="logo-tile"><img src="images/tech/git.svg" alt="" width="40" height="40">Git</span>
+                    <span class="logo-tile"><img src="images/tech/github.svg" alt="" width="40" height="40">GitHub</span>
+                    <span class="logo-tile"><img src="images/tech/gitlab.svg" alt="" width="40" height="40">GitLab</span>
+                    <span class="logo-tile"><img src="images/tech/linux.svg" alt="" width="40" height="40">Linux</span>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="bento">
+                    <article class="bento-card b-lang tilt" data-reveal>
+                        <h3><i class="fas fa-code" aria-hidden="true"></i> Programming languages</h3>
+                        <ul class="skill-list">
+                            <li><img src="images/tech/java.svg" alt="" width="22" height="22">Java</li>
+                            <li><img src="images/tech/cpp.svg" alt="" width="22" height="22">C++</li>
+                            <li><img src="images/tech/c.svg" alt="" width="22" height="22">C</li>
+                            <li><img src="images/tech/python.svg" alt="" width="22" height="22">Python</li>
+                            <li><img src="images/tech/javascript.svg" alt="" width="22" height="22">JavaScript</li>
+                            <li><img src="images/tech/typescript.svg" alt="" width="22" height="22">TypeScript</li>
+                            <li><img src="images/tech/mysql.svg" alt="" width="22" height="22">SQL (MySQL)</li>
+                            <li><img src="images/tech/postgresql.svg" alt="" width="22" height="22">PostgreSQL</li>
+                            <li><img src="images/tech/bash.svg" alt="" width="22" height="22">Bash</li>
+                        </ul>
+                    </article>
+                    <article class="bento-card b-front tilt" data-reveal>
+                        <h3><i class="fas fa-palette" aria-hidden="true"></i> Frontend &amp; UI</h3>
+                        <ul class="skill-list">
+                            <li><img src="images/tech/react.svg" alt="" width="22" height="22">React</li>
+                            <li><img src="images/tech/nextjs.svg" alt="" width="22" height="22">Next.js (SSR/SSG)</li>
+                            <li><img src="images/tech/angularjs.svg" alt="" width="22" height="22">AngularJS</li>
+                            <li><img src="images/tech/redux.svg" alt="" width="22" height="22">Redux</li>
+                            <li><img src="images/tech/html5.svg" alt="" width="22" height="22">HTML5</li>
+                            <li><img src="images/tech/css3.svg" alt="" width="22" height="22">CSS3</li>
+                            <li><img src="images/tech/bootstrap.svg" alt="" width="22" height="22">Bootstrap</li>
+                            <li><img src="images/tech/mui.svg" alt="" width="22" height="22">MUI</li>
+                            <li>jQuery</li>
+                        </ul>
+                    </article>
+                    <article class="bento-card b-back tilt" data-reveal>
+                        <h3><i class="fas fa-server" aria-hidden="true"></i> Backend &amp; APIs</h3>
+                        <ul class="skill-list">
+                            <li><img src="images/tech/nodejs.svg" alt="" width="22" height="22">Node.js</li>
+                            <li><img src="images/tech/express.svg" alt="" width="22" height="22">Express</li>
+                            <li><img src="images/tech/spring.svg" alt="" width="22" height="22">Spring Boot</li>
+                            <li><img src="images/tech/django.svg" alt="" width="22" height="22">Django</li>
+                            <li><img src="images/tech/mongodb.svg" alt="" width="22" height="22">MongoDB</li>
+                            <li><img src="images/tech/socketio.svg" alt="" width="22" height="22">Socket.io</li>
+                            <li><img src="images/tech/linux.svg" alt="" width="22" height="22">Linux</li>
+                            <li>REST APIs</li><li>Microservices</li><li>Web Scraping</li>
+                        </ul>
+                    </article>
+                    <article class="bento-card b-cloud tilt" data-reveal>
+                        <h3><i class="fas fa-cloud" aria-hidden="true"></i> Cloud &amp; Data</h3>
+                        <ul class="skill-list">
+                            <li><img src="images/tech/gcp.svg" alt="" width="22" height="22">GCP (BigQuery, Cloud Storage)</li>
+                            <li><img src="images/tech/aws.svg" alt="" width="22" height="22">AWS</li>
+                            <li><img src="images/tech/docker.svg" alt="" width="22" height="22">Docker</li>
+                            <li><img src="images/tech/kubernetes.svg" alt="" width="22" height="22">Kubernetes</li>
+                            <li><img src="images/tech/airflow.svg" alt="" width="22" height="22">Airflow</li>
+                            <li><img src="images/tech/kafka.svg" alt="" width="22" height="22">Kafka</li>
+                            <li><img src="images/tech/spark.svg" alt="" width="22" height="22">Apache Spark</li>
+                            <li><img src="images/tech/hadoop.svg" alt="" width="22" height="22">Hive &amp; HBase</li>
+                        </ul>
+                    </article>
+                    <article class="bento-card b-ml tilt" data-reveal>
+                        <h3><i class="fas fa-brain" aria-hidden="true"></i> Data Science &amp; ML</h3>
+                        <ul class="skill-list">
+                            <li>Machine Learning</li><li>AI</li><li>Data Analytics</li><li>Risk Management</li><li>Data Structures &amp; Algorithms</li>
+                        </ul>
+                    </article>
+                    <article class="bento-card b-devops tilt" data-reveal>
+                        <h3><i class="fas fa-infinity" aria-hidden="true"></i> DevOps &amp; Process</h3>
+                        <ul class="skill-list">
+                            <li><img src="images/tech/git.svg" alt="" width="22" height="22">Git</li>
+                            <li><img src="images/tech/github.svg" alt="" width="22" height="22">GitHub</li>
+                            <li><img src="images/tech/gitlab.svg" alt="" width="22" height="22">GitLab</li>
+                            <li>CI/CD</li><li>Agile</li><li>Scrum</li><li>Software Design</li><li>Requirements Gathering</li><li>Networking (CCNA)</li><li>Operating Systems</li>
+                        </ul>
+                    </article>
+                    <article class="bento-card b-quality tilt" data-reveal>
+                        <h3><i class="fas fa-check-double" aria-hidden="true"></i> Quality &amp; Practices</h3>
+                        <ul class="skill-list">
+                            <li>QA / Testing</li><li>Code Quality</li><li>System Maintenance</li><li>Analytical &amp; Problem Solving</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ACHIEVEMENTS ================= -->
         <section class="section" id="achievements">
             <div class="container">
-                <header class="section-head reveal">
-                    <p class="kicker">05 &middot; Achievements</p>
-                    <h2>Wins &amp; certifications</h2>
+                <header class="section-head" data-reveal>
+                    <p class="kicker"><span>05</span> Achievements</p>
+                    <h2 data-split-words>Recognition, education &amp; certifications</h2>
                 </header>
-                <div class="win-grid">
-                    <article class="win-card reveal">
-                        <span class="win-icon" aria-hidden="true"><i class="fas fa-trophy"></i></span>
+
+                <div class="ach-grid">
+                    <article class="ach-card ach-leetcode tilt" data-reveal>
+                        <div class="ring" style="--val: 90" data-ring>
+                            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="52"></circle><circle class="ring-fg" cx="60" cy="60" r="52" pathLength="100"></circle></svg>
+                            <div class="ring-label"><strong>Top 10%</strong><span>globally</span></div>
+                        </div>
                         <div>
-                            <h3>First Prize, IIT Indore Flutter Quizmania</h3>
-                            <p>Run by Google Developer Student Clubs (GDSC). I took part in the webinar and quiz and finished 1st with about 9,000 points.</p>
+                            <h3>LeetCode</h3>
+                            <p><strong><span data-count="1737">1737</span></strong> contest rating with <strong><span data-count="700">700</span>+</strong> DSA problems solved.</p>
                         </div>
                     </article>
-                    <article class="win-card reveal">
-                        <span class="win-icon" aria-hidden="true"><i class="fas fa-running"></i></span>
+                    <article class="ach-card tilt" data-reveal>
+                        <div class="ring" style="--val: 80.6" data-ring>
+                            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="52"></circle><circle class="ring-fg" cx="60" cy="60" r="52" pathLength="100"></circle></svg>
+                            <div class="ring-label"><strong>Top 20%</strong><span>worldwide</span></div>
+                        </div>
                         <div>
-                            <h3>Top 10, Marathon Race</h3>
-                            <p>Cleared every round of a race of about 25 km and finished in the top 10.</p>
+                            <h3>Google Kickstart 2022</h3>
+                            <p>Ranked <strong>3,394</strong> out of <strong>17,464</strong> participants around the world.</p>
+                        </div>
+                    </article>
+                    <article class="ach-card ach-small tilt" data-reveal>
+                        <span class="ach-icon" aria-hidden="true"><i class="fas fa-trophy"></i></span>
+                        <div>
+                            <h3>1st Prize, GDSC Flutter Quiz</h3>
+                            <p>IIT Indore, 2023. Won with a score of about 9,000 points.</p>
+                        </div>
+                    </article>
+                    <article class="ach-card ach-small tilt" data-reveal>
+                        <span class="ach-icon" aria-hidden="true"><i class="fas fa-chalkboard-teacher"></i></span>
+                        <div>
+                            <h3>Programming Mentor, BitByte</h3>
+                            <p>Mentored 20 students through their first DSA and project milestones at Medi-Caps University's programming club.</p>
+                        </div>
+                    </article>
+                    <article class="ach-card ach-small tilt" data-reveal>
+                        <span class="ach-icon" aria-hidden="true"><i class="fas fa-code-branch"></i></span>
+                        <div>
+                            <h3>Hacktoberfest 2022</h3>
+                            <p>Completed with 3 badges for open-source contributions.</p>
                         </div>
                     </article>
                 </div>
 
-                <h3 class="sub-head reveal">Certifications</h3>
-                <ul class="cert-grid">
-                    <li class="reveal">
-                        <a class="cert" href="images/certificates/unicompiler.jpg" data-cert="unicompiler">
+                <div class="edu-cert">
+                    <article class="edu-card glow-border" data-reveal>
+                        <div class="ring ring-sm" style="--val: 91.4" data-ring>
+                            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="52"></circle><circle class="ring-fg" cx="60" cy="60" r="52" pathLength="100"></circle></svg>
+                            <div class="ring-label"><strong>9.14</strong><span>CGPA</span></div>
+                        </div>
+                        <div>
+                            <p class="edu-kicker"><i class="fas fa-graduation-cap" aria-hidden="true"></i> Education</p>
+                            <h3>Bachelor of Technology in Computer Science</h3>
+                            <p>Medi-Caps University, Indore, India</p>
+                            <p class="edu-date">Mar 2020 &ndash; Jun 2024</p>
+                        </div>
+                    </article>
+
+                    <ul class="cert-list">
+                        <li class="cert-card shine" data-reveal>
+                            <span class="cert-logo aws" aria-hidden="true"><i class="fab fa-aws"></i></span>
+                            <div><h3>Amazon Web Services (AWS)</h3><p>Amazon &middot; Sep 2023 &ndash; Oct 2023</p></div>
+                        </li>
+                        <li class="cert-card shine" data-reveal>
+                            <span class="cert-logo cisco" aria-hidden="true"><i class="fas fa-network-wired"></i></span>
+                            <div><h3>Cisco Certified Network Associate (CCNA)</h3><p>Cisco &middot; Jan 2024 &ndash; Mar 2024</p></div>
+                        </li>
+                        <li class="cert-card shine" data-reveal>
+                            <span class="cert-logo ms" aria-hidden="true"><i class="fab fa-microsoft"></i></span>
+                            <div><h3>Microsoft AI &amp; ML Engineering</h3><p>Microsoft &middot; Sep 2024 &ndash; Dec 2024</p></div>
+                        </li>
+                    </ul>
+                </div>
+
+                <h3 class="sub-head" data-reveal><i class="fas fa-images" aria-hidden="true"></i> Earlier certificates</h3>
+                <ul class="cert-gallery">
+                    <li data-reveal>
+                        <a class="gallery-item" href="images/certificates/unicompiler.jpg" data-cert="unicompiler">
                             <img src="images/certificates/unicompiler-thumb.jpg" width="480" height="339" loading="lazy" alt="">
-                            <span class="cert-body">
-                                <strong>Web Development &amp; Design Internship</strong>
-                                <span>UNIcompiler &middot; Aug 2022</span>
-                            </span>
+                            <span><strong>Web Development &amp; Design Internship</strong>UNIcompiler &middot; Aug 2022</span>
                         </a>
                     </li>
-                    <li class="reveal">
-                        <a class="cert" href="images/certificates/axiom-cloud.jpg" data-cert="axiom">
+                    <li data-reveal>
+                        <a class="gallery-item" href="images/certificates/axiom-cloud.jpg" data-cert="axiom">
                             <img src="images/certificates/axiom-cloud-thumb.jpg" width="303" height="480" loading="lazy" alt="">
-                            <span class="cert-body">
-                                <strong>Certificate of Internship</strong>
-                                <span>Axiom Cloud Solutions &middot; Jul&ndash;Aug 2021</span>
-                            </span>
+                            <span><strong>Certificate of Internship</strong>Axiom Cloud Solutions &middot; Jul&ndash;Aug 2021</span>
                         </a>
                     </li>
-                    <li class="reveal">
-                        <a class="cert" href="images/certificates/linkedin-frontend.jpg" data-cert="linkedin">
+                    <li data-reveal>
+                        <a class="gallery-item" href="images/certificates/linkedin-frontend.jpg" data-cert="linkedin">
                             <img src="images/certificates/linkedin-frontend-thumb.jpg" width="480" height="371" loading="lazy" alt="">
-                            <span class="cert-body">
-                                <strong>Explore a Career in Front-End Web Development</strong>
-                                <span>LinkedIn Learning &middot; Dec 2022</span>
-                            </span>
+                            <span><strong>Explore a Career in Front-End Web Development</strong>LinkedIn Learning &middot; Dec 2022</span>
                         </a>
                     </li>
                 </ul>
             </div>
         </section>
 
-        <!-- contact -->
-        <section class="section alt" id="contact">
+        <!-- ================= CONTACT ================= -->
+        <section class="section alt contact-section" id="contact">
+            <div class="contact-aurora" aria-hidden="true"></div>
             <div class="container">
-                <header class="section-head reveal">
-                    <p class="kicker">06 &middot; Contact</p>
-                    <h2>Let's work together</h2>
+                <header class="section-head" data-reveal>
+                    <p class="kicker"><span>06</span> Contact</p>
+                    <h2 class="contact-title" data-split-words>Let's build something great together</h2>
+                    <p class="section-sub">Have a role, a project or an idea? My inbox is always open.</p>
                 </header>
-                <div class="contact-card reveal">
-                    <div class="contact-info">
-                        <h3>Get in touch</h3>
-                        <p>Life becomes a celebration when friends keep in touch. Whether it's an opportunity,
-                            a project or just a hello, my inbox is open.</p>
-                        <ul class="contact-list">
-                            <li>
-                                <span class="c-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
-                                <div><span class="c-label">Email</span><a href="mailto:tanishharsh158@gmail.com">tanishharsh158@gmail.com</a></div>
-                            </li>
-                            <li>
-                                <span class="c-icon" aria-hidden="true"><i class="fab fa-linkedin-in"></i></span>
-                                <div><span class="c-label">LinkedIn</span><a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer">in/tanish-jain-68b285217</a></div>
-                            </li>
-                            <li>
-                                <span class="c-icon" aria-hidden="true"><i class="fab fa-github"></i></span>
-                                <div><span class="c-label">GitHub</span><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">github.com/tanishjain158</a></div>
-                            </li>
-                            <li>
-                                <span class="c-icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></span>
-                                <div><span class="c-label">Location</span><span>Indore, Madhya Pradesh</span></div>
-                            </li>
-                        </ul>
-                    </div>
 
-                    <form class="contact-form" action="mailto:tanishharsh158@gmail.com" method="post" enctype="text/plain">
+                <div class="contact-grid">
+                    <ul class="contact-cards">
+                        <li class="contact-card tilt" data-reveal>
+                            <span class="cc-icon" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+                            <div class="cc-body"><span class="cc-label">Email</span><a href="mailto:tanishharsh158@gmail.com">tanishharsh158@<wbr>gmail.com</a></div>
+                            <button class="icon-btn copy-btn" type="button" data-copy="tanishharsh158@gmail.com" aria-label="Copy email address"><i class="far fa-copy" aria-hidden="true"></i></button>
+                        </li>
+                        <li class="contact-card tilt" data-reveal>
+                            <span class="cc-icon" aria-hidden="true"><i class="fas fa-phone-alt"></i></span>
+                            <div class="cc-body"><span class="cc-label">Phone</span><a href="tel:+919602001568">+91&nbsp;96020&nbsp;01568</a></div>
+                            <button class="icon-btn copy-btn" type="button" data-copy="+91 9602001568" aria-label="Copy phone number"><i class="far fa-copy" aria-hidden="true"></i></button>
+                        </li>
+                        <li class="contact-card tilt" data-reveal>
+                            <span class="cc-icon" aria-hidden="true"><i class="fab fa-linkedin-in"></i></span>
+                            <div class="cc-body"><span class="cc-label">LinkedIn</span><a href="https://www.linkedin.com/in/tanish-jain-68b285217" target="_blank" rel="noopener noreferrer">in/tanish-jain-68b285217</a></div>
+                        </li>
+                        <li class="contact-card tilt" data-reveal>
+                            <span class="cc-icon" aria-hidden="true"><i class="fab fa-github"></i></span>
+                            <div class="cc-body"><span class="cc-label">GitHub</span><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer">github.com/tanishjain158</a></div>
+                        </li>
+                    </ul>
+
+                    <form class="contact-form glow-border" action="mailto:tanishharsh158@gmail.com" method="post" enctype="text/plain" data-reveal>
                         <div class="form-row">
                             <div class="field">
-                                <label for="cf-name">Name</label>
-                                <input id="cf-name" name="name" type="text" placeholder="Your name" autocomplete="name" required>
+                                <input id="cf-name" name="name" type="text" placeholder=" " autocomplete="name" required>
+                                <label for="cf-name">Your name</label>
                             </div>
                             <div class="field">
-                                <label for="cf-email">Email</label>
-                                <input id="cf-email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required>
+                                <input id="cf-email" name="email" type="email" placeholder=" " autocomplete="email" required>
+                                <label for="cf-email">Your email</label>
                             </div>
                         </div>
                         <div class="field">
+                            <input id="cf-subject" name="subject" type="text" placeholder=" " required>
                             <label for="cf-subject">Subject</label>
-                            <input id="cf-subject" name="subject" type="text" placeholder="What's it about?" required>
                         </div>
                         <div class="field">
+                            <textarea id="cf-message" name="message" rows="5" placeholder=" " required></textarea>
                             <label for="cf-message">Message</label>
-                            <textarea id="cf-message" name="message" rows="5" placeholder="Tell me a little about it..." required></textarea>
                         </div>
                         <div class="form-actions">
-                            <button class="btn" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i> Send message</button>
+                            <button class="btn magnetic" type="submit"><i class="fas fa-paper-plane" aria-hidden="true"></i> Send message</button>
                             <p class="form-note" role="status">Opens your email app with the message ready to send.</p>
                         </div>
                     </form>
@@ -407,6 +743,7 @@
     </main>
 
     <footer class="footer">
+        <div class="footer-giant" aria-hidden="true">TANISH JAIN</div>
         <div class="container footer-inner">
             <a class="logo" href="#home" aria-label="Back to top">
                 <span class="logo-badge">TJ</span>
@@ -416,27 +753,43 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#experience">Experience</a></li>
                 <li><a href="#projects">Projects</a></li>
+                <li><a href="#skills">Skills</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <ul class="footer-social">
-                <li><a href="https://www.linkedin.com/in/tanish-jain-68b285217/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a></li>
+                <li><a href="https://www.linkedin.com/in/tanish-jain-68b285217" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin-in" aria-hidden="true"></i></a></li>
                 <li><a href="https://github.com/tanishjain158" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github" aria-hidden="true"></i></a></li>
                 <li><a href="mailto:tanishharsh158@gmail.com" aria-label="Email"><i class="fas fa-envelope" aria-hidden="true"></i></a></li>
             </ul>
         </div>
-        <p class="copyright">&copy; <span id="year">2026</span> Tanish Jain. Built with HTML, CSS &amp; JavaScript.</p>
+        <p class="copyright">&copy; <span id="year">2026</span> Tanish Jain. Designed &amp; built from scratch with HTML, CSS &amp; JavaScript. <span class="kbd-hint">Press <kbd>Ctrl</kbd> + <kbd>K</kbd> to navigate.</span></p>
     </footer>
 
-    <button class="scroll-up-btn" type="button" aria-label="Back to top">
+    <button class="to-top" type="button" aria-label="Back to top">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="21" pathLength="100"></circle></svg>
         <i class="fas fa-arrow-up" aria-hidden="true"></i>
     </button>
 
+    <div class="toast" role="status" aria-live="polite"></div>
+
+    <!-- certificate viewer -->
     <dialog class="lightbox" aria-labelledby="lightbox-title">
         <div class="lightbox-head">
             <h2 id="lightbox-title">Certificate</h2>
             <button class="icon-btn lightbox-close" type="button" aria-label="Close"><i class="fas fa-times" aria-hidden="true"></i></button>
         </div>
-        <img class="lightbox-img" src="data:," alt="">
+        <img class="lightbox-img" src="images/certificates/unicompiler.jpg" alt="" width="1529" height="1080" loading="lazy">
+    </dialog>
+
+    <!-- command palette -->
+    <dialog class="palette" aria-label="Command palette">
+        <div class="palette-search">
+            <i class="fas fa-search" aria-hidden="true"></i>
+            <input type="text" class="palette-input" placeholder="Type a command or search..." aria-label="Search commands" role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" autocomplete="off" spellcheck="false">
+            <kbd>Esc</kbd>
+        </div>
+        <ul class="palette-list" id="palette-list" role="listbox" aria-label="Commands"></ul>
+        <p class="palette-foot"><span><kbd>&uarr;</kbd><kbd>&darr;</kbd> to move</span><span><kbd>Enter</kbd> to select</span></p>
     </dialog>
 </body>
 </html>

@@ -996,6 +996,7 @@
 
     var yearEl = $('#year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+    window.__portfolioReady = true;
 
     /* ---------------------------------------------------------------
        Hero name: dock-style letters that rise toward the cursor

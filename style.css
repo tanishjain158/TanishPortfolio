@@ -2887,9 +2887,6 @@ dialog[open]{
     .ach-grid .ach-card:nth-child(-n+2){
         grid-column: span 3;
     }
-    .ach-grid .ach-card:last-child{
-        grid-column: span 6;
-    }
 }
 
 @media (max-width: 980px){
@@ -3116,6 +3113,102 @@ dialog[open]{
     .cc-body a{
         font-size: 14.5px;
     }
+}
+
+/* ============================== more projects + proficiency ============================== */
+.more-projects{
+    margin-top: 64px;
+}
+.mini-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+.mini-card{
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+}
+.mini-card:hover{
+    border-color: rgba(255, 77, 109, 0.4);
+    box-shadow: var(--glow);
+}
+.mini-icon{
+    flex: none;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    font-size: 19px;
+    color: #fff;
+    background: var(--grad);
+    border-radius: 14px;
+    box-shadow: 0 10px 22px -8px rgba(220, 20, 60, 0.7);
+}
+.mini-card h4{
+    font-size: 17px;
+}
+.mini-card p{
+    margin-top: 4px;
+    font-size: 14.5px;
+    color: var(--muted);
+}
+.b-prof{
+    grid-column: 1 / -1;
+}
+.prof-bars{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 40px;
+}
+.bar-info{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+    font-size: 14.5px;
+    font-weight: 500;
+}
+.bar-info span:last-child{
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+}
+.bar-line{
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    overflow: hidden;
+}
+.bar-line::before{
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--level);
+    border-radius: inherit;
+    background: var(--grad);
+    box-shadow: 0 0 10px rgba(255, 77, 109, 0.6);
+    transition: width 1.4s var(--ease) 0.2s;
+}
+.js .b-prof:not(.in) .bar-line::before{
+    width: 0;
+}
+.prof-bars li:nth-child(2n) .bar-line::before{
+    transition-delay: 0.3s;
+}
+@media (max-width: 640px){
+    .mini-grid,
+    .prof-bars{
+        grid-template-columns: 1fr;
+    }
+}
+/* achievements: two per row once there are four small cards */
+.ach-grid .ach-small{
+    grid-column: span 3;
 }
 
 /* ============================== project filter ============================== */

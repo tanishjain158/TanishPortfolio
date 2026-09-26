@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found | Tanish Jain</title>
+    <meta name="robots" content="noindex">
+    <meta name="theme-color" content="#dc143c">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23dc143c'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial,sans-serif' font-size='30' font-weight='700' fill='%23fff'%3ETJ%3C/text%3E%3C/svg%3E">
+    <style>
+        :root{ --grad: linear-gradient(120deg, #dc143c 0%, #ff4d6d 50%, #ff8a4c 100%); }
+        *{ margin: 0; padding: 0; box-sizing: border-box; }
+        body{
+            min-height: 100vh;
+            min-height: 100svh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            color: #ededf3;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(220, 20, 60, 0.35), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(109, 40, 217, 0.3), transparent 50%),
+                #07070b;
+            text-align: center;
+        }
+        .code{
+            font-size: clamp(110px, 28vw, 220px);
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.05em;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: float 5s ease-in-out infinite;
+        }
+        @keyframes float{ 50%{ transform: translateY(-12px); } }
+        h1{ margin-top: 10px; font-size: clamp(22px, 4vw, 30px); }
+        p{ margin-top: 10px; color: #a3a3b3; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 15px; }
+        a{
+            display: inline-block;
+            margin-top: 28px;
+            padding: 13px 28px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            background: var(--grad);
+            border-radius: 999px;
+            box-shadow: 0 10px 28px -8px rgba(220, 20, 60, 0.7);
+        }
+        a:focus-visible{ outline: 3px solid #ff4d6d; outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce){ .code{ animation: none; } }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="code" aria-hidden="true">404</div>
+        <h1>This page wandered off</h1>
+        <p>&gt;_ route not found: the link may be old or mistyped.</p>
+        <a href="/TanishPortfolio/">Back to the portfolio</a>
+    </main>
+</body>
+</html>

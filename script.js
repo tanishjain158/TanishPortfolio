@@ -8,6 +8,18 @@
     var hasIO = 'IntersectionObserver' in window;
     var EMAIL = 'tanishharsh158@gmail.com';
 
+    function icon(name) {
+        return '<svg class="i i-' + name + '" aria-hidden="true"><use href="#i-' + name + '"></use></svg>';
+    }
+    // run fn once the page has loaded and the main thread is idle
+    function whenIdle(fn) {
+        function go() {
+            if ('requestIdleCallback' in window) window.requestIdleCallback(fn, { timeout: 1200 });
+            else setTimeout(fn, 200);
+        }
+        if (document.readyState === 'complete') go();
+        else window.addEventListener('load', go, { once: true });
+    }
     function $(sel, ctx) { return (ctx || document).querySelector(sel); }
     function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
     function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
@@ -18,7 +30,7 @@
     var toastEl = $('.toast');
     var toastTimer;
     function toast(message) {
-        toastEl.innerHTML = '<i class="fas fa-check-circle" aria-hidden="true"></i>' + message;
+        toastEl.innerHTML = icon('check-circle') + message;
         toastEl.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2400);
@@ -189,7 +201,7 @@
             canvas.width = W * dpr;
             canvas.height = H * dpr;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            var count = Math.round(clamp(W * H / 12000, 30, 120));
+            var count = Math.round(clamp(W * H / 13000, 28, 95));
             particles = [];
             for (var i = 0; i < count; i++) {
                 particles.push({
@@ -203,59 +215,76 @@
             }
         };
 
+        var BANDS = 4;
         var drawFrame = function () {
             ctx.clearRect(0, 0, W, H);
-            var linkDist = 118;
+            var linkDist = W < 700 ? 96 : 118;
+            var link2 = linkDist * linkDist;
+            var lines = [];
+            for (var b = 0; b < BANDS; b++) lines.push(new Path2D());
+            var toPointer = new Path2D();
+            var dotsCool = new Path2D();
+            var dotsWarm = new Path2D();
+            var pointerActive = pointer.x > -1000;
             for (var i = 0; i < particles.length; i++) {
                 var p = particles[i];
                 if (!reduceMotion) {
-                    var dx = p.x - pointer.x;
-                    var dy = p.y - pointer.y;
-                    var d2 = dx * dx + dy * dy;
-                    if (d2 < 150 * 150 && d2 > 0.01) {
-                        var d = Math.sqrt(d2);
-                        var force = (1 - d / 150) * 0.6;
-                        p.x += (dx / d) * force;
-                        p.y += (dy / d) * force;
+                    if (pointerActive) {
+                        var dx = p.x - pointer.x;
+                        var dy = p.y - pointer.y;
+                        var d2 = dx * dx + dy * dy;
+                        if (d2 < 22500 && d2 > 0.01) {
+                            var d = Math.sqrt(d2);
+                            var force = (1 - d / 150) * 0.6;
+                            p.x += (dx / d) * force;
+                            p.y += (dy / d) * force;
+                        }
                     }
                     p.x += p.vx;
                     p.y += p.vy;
                     if (p.x < -10) p.x = W + 10;
-                    if (p.x > W + 10) p.x = -10;
+                    else if (p.x > W + 10) p.x = -10;
                     if (p.y < -10) p.y = H + 10;
-                    if (p.y > H + 10) p.y = -10;
+                    else if (p.y > H + 10) p.y = -10;
                 }
                 for (var j = i + 1; j < particles.length; j++) {
                     var q = particles[j];
                     var lx = p.x - q.x;
                     var ly = p.y - q.y;
                     var ld = lx * lx + ly * ly;
-                    if (ld < linkDist * linkDist) {
-                        var a = (1 - Math.sqrt(ld) / linkDist) * 0.28;
-                        ctx.strokeStyle = 'rgba(255, 120, 145, ' + a + ')';
-                        ctx.lineWidth = 0.8;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(q.x, q.y);
-                        ctx.stroke();
+                    if (ld < link2) {
+                        // closer pairs go in brighter bands
+                        var band = Math.min(BANDS - 1, Math.floor((1 - Math.sqrt(ld) / linkDist) * BANDS));
+                        lines[band].moveTo(p.x, p.y);
+                        lines[band].lineTo(q.x, q.y);
                     }
                 }
-                var mx = p.x - pointer.x;
-                var my = p.y - pointer.y;
-                var md = Math.sqrt(mx * mx + my * my);
-                if (md < 200) {
-                    ctx.strokeStyle = 'rgba(255, 170, 120, ' + ((1 - md / 200) * 0.45) + ')';
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(pointer.x, pointer.y);
-                    ctx.stroke();
+                if (pointerActive) {
+                    var mx = p.x - pointer.x;
+                    var my = p.y - pointer.y;
+                    if (mx * mx + my * my < 32400) {
+                        toPointer.moveTo(p.x, p.y);
+                        toPointer.lineTo(pointer.x, pointer.y);
+                    }
                 }
-                ctx.beginPath();
-                ctx.fillStyle = p.warm ? 'rgba(255, 170, 120, 0.9)' : 'rgba(255, 110, 140, 0.9)';
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fill();
+                var dots = p.warm ? dotsWarm : dotsCool;
+                dots.moveTo(p.x + p.r, p.y);
+                dots.arc(p.x, p.y, p.r, 0, Math.PI * 2);
             }
+            ctx.lineWidth = 0.8;
+            for (var k = 0; k < BANDS; k++) {
+                ctx.strokeStyle = 'rgba(255, 120, 145, ' + (((k + 0.5) / BANDS) * 0.3).toFixed(3) + ')';
+                ctx.stroke(lines[k]);
+            }
+            if (pointerActive) {
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgba(255, 170, 120, 0.22)';
+                ctx.stroke(toPointer);
+            }
+            ctx.fillStyle = 'rgba(255, 110, 140, 0.9)';
+            ctx.fill(dotsCool);
+            ctx.fillStyle = 'rgba(255, 170, 120, 0.9)';
+            ctx.fill(dotsWarm);
         };
 
         var canvasLoop = function () {
@@ -266,7 +295,7 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
         if (reduceMotion) drawFrame();
-        else requestAnimationFrame(canvasLoop);
+        else whenIdle(function () { requestAnimationFrame(canvasLoop); });
     }
 
     if (hero) {
@@ -312,8 +341,9 @@
         var speedX = 0.0022, speedY = 0.0038;
         var targetX = speedX, targetY = speedY;
 
+        var R = globeEl.clientWidth * 0.44;
+        window.addEventListener('resize', function () { R = globeEl.clientWidth * 0.44; });
         var renderGlobe = function () {
-            var R = globeEl.clientWidth * 0.44;
             speedX += (targetX - speedX) * 0.05;
             speedY += (targetY - speedY) * 0.05;
             var cosX = Math.cos(speedX), sinX = Math.sin(speedX);
@@ -332,8 +362,10 @@
                 var scale = 0.55 + depth * 0.65;
                 p.el.style.transform = 'translate(-50%, -50%) translate3d(' + (p.x * R).toFixed(1) + 'px,' + (p.y * R).toFixed(1) + 'px,0) scale(' + scale.toFixed(3) + ')';
                 p.el.style.opacity = (0.18 + depth * 0.82).toFixed(3);
-                p.el.style.zIndex = Math.round(depth * 100);
-                p.el.classList.toggle('hot', depth > 0.82);
+                var z = Math.round(depth * 100);
+                if (z !== p.zi) { p.el.style.zIndex = z; p.zi = z; }
+                var hot = depth > 0.82;
+                if (hot !== p.hot) { p.el.classList.toggle('hot', hot); p.hot = hot; }
             }
         };
 
@@ -343,7 +375,7 @@
         };
         renderGlobe();
         if (!reduceMotion) {
-            requestAnimationFrame(globeLoop);
+            whenIdle(function () { requestAnimationFrame(globeLoop); });
             var visual = $('.hero-visual');
             window.addEventListener('pointermove', function (e) {
                 if (!heroVisible) return;
@@ -425,18 +457,26 @@
     var lastY = window.scrollY;
     var ticking = false;
 
+    var tlNodes = tlItems.map(function (item) { return item.querySelector('.tl-node'); });
     function onScroll() {
+        // --- read phase (no DOM writes until every measurement is taken) ---
         var y = window.scrollY;
         var vh = window.innerHeight;
         var max = document.documentElement.scrollHeight - vh;
         var progress = max > 0 ? clamp(y / max, 0, 1) : 0;
+        var line = vh * 0.62;
+        var tr = timeline ? timeline.getBoundingClientRect() : null;
+        var nodeMids = tlNodes.map(function (node) {
+            var r = node.getBoundingClientRect();
+            return r.top + r.height / 2;
+        });
+        var parallaxRects = reduceMotion ? [] : parallaxEls.map(function (el) { return el.getBoundingClientRect(); });
 
+        // --- write phase ---
         navbar.classList.toggle('scrolled', y > 30);
         if (!document.body.classList.contains('menu-open')) {
-            var goingDown = y > lastY + 4;
-            var goingUp = y < lastY - 4;
-            if (goingDown && y > 500) navbar.classList.add('nav-hidden');
-            else if (goingUp || y < 500) navbar.classList.remove('nav-hidden');
+            if (y > lastY + 4 && y > 500) navbar.classList.add('nav-hidden');
+            else if (y < lastY - 4 || y < 500) navbar.classList.remove('nav-hidden');
         }
         lastY = y;
 
@@ -444,25 +484,18 @@
         toTop.classList.toggle('show', y > 600);
         toTop.style.setProperty('--p', progress.toFixed(4));
 
-        if (timeline) {
-            var tr = timeline.getBoundingClientRect();
-            var line = vh * 0.62;
+        if (tr) {
             var tp = reduceMotion ? 1 : clamp((line - tr.top) / tr.height, 0, 1);
             timeline.style.setProperty('--p', tp.toFixed(4));
-            tlItems.forEach(function (item) {
-                var node = item.querySelector('.tl-node').getBoundingClientRect();
-                item.classList.toggle('lit', reduceMotion || node.top + node.height / 2 < line);
+            tlItems.forEach(function (item, k) {
+                item.classList.toggle('lit', reduceMotion || nodeMids[k] < line);
             });
         }
-
-        if (!reduceMotion) {
-            parallaxEls.forEach(function (el) {
-                var r = el.getBoundingClientRect();
-                var speed = parseFloat(el.dataset.speed || '0.05');
-                var offset = (r.top + r.height / 2 - vh / 2) * -speed;
-                el.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0)';
-            });
-        }
+        parallaxRects.forEach(function (r, k) {
+            var el = parallaxEls[k];
+            var offset = (r.top + r.height / 2 - vh / 2) * -parseFloat(el.dataset.speed || '0.05');
+            el.style.transform = 'translate3d(0,' + offset.toFixed(1) + 'px,0)';
+        });
         ticking = false;
     }
     window.addEventListener('scroll', function () {
@@ -521,7 +554,7 @@
     }
     function syncThemeButton() {
         var dark = currentTheme() === 'dark';
-        themeBtn.querySelector('i').className = dark ? 'fas fa-sun' : 'fas fa-moon';
+        themeBtn.querySelector('use').setAttribute('href', dark ? '#i-sun' : '#i-moon');
         themeBtn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
     }
     function applyTheme(next) {
@@ -606,21 +639,21 @@
     }
     function openUrl(url) { window.open(url, '_blank', 'noopener'); }
     var commands = [
-        { group: 'Navigate', icon: 'fas fa-home', label: 'Home', run: function () { goTo('home'); } },
-        { group: 'Navigate', icon: 'fas fa-user', label: 'About', run: function () { goTo('about'); } },
-        { group: 'Navigate', icon: 'fas fa-briefcase', label: 'Experience', keys: 'work pwc jobs', run: function () { goTo('experience'); } },
-        { group: 'Navigate', icon: 'fas fa-rocket', label: 'Projects', run: function () { goTo('projects'); } },
-        { group: 'Navigate', icon: 'fas fa-layer-group', label: 'Skills', keys: 'stack tech', run: function () { goTo('skills'); } },
-        { group: 'Navigate', icon: 'fas fa-trophy', label: 'Achievements', keys: 'leetcode certifications education', run: function () { goTo('achievements'); } },
-        { group: 'Navigate', icon: 'fas fa-paper-plane', label: 'Contact', run: function () { goTo('contact'); } },
-        { group: 'Actions', icon: 'fas fa-adjust', label: 'Toggle light / dark theme', keys: 'dark mode', run: function () { toggleTheme(); } },
-        { group: 'Actions', icon: 'far fa-copy', label: 'Copy email address', hint: EMAIL, run: function () { copyText(EMAIL, 'Email'); } },
-        { group: 'Actions', icon: 'fas fa-file-download', label: 'Download resume', keys: 'cv pdf', run: function () { openUrl('Tanish_Jain_Resume.pdf'); } },
-        { group: 'Actions', icon: 'fas fa-envelope', label: 'Send an email', run: function () { window.location.href = 'mailto:' + EMAIL; } },
-        { group: 'Links', icon: 'fab fa-github', label: 'GitHub', hint: 'tanishjain158', run: function () { openUrl('https://github.com/tanishjain158'); } },
-        { group: 'Links', icon: 'fab fa-linkedin-in', label: 'LinkedIn', run: function () { openUrl('https://www.linkedin.com/in/tanish-jain-68b285217'); } },
-        { group: 'Links', icon: 'fas fa-gamepad', label: 'Board Game Inc. (live)', keys: 'project', run: function () { openUrl('https://chimerical-hummingbird-a213c6.netlify.app/'); } },
-        { group: 'Links', icon: 'fas fa-chart-line', label: 'COVID-19 dashboard (live)', keys: 'project data', run: function () { openUrl('https://covid19-dash.github.io/'); } }
+        { group: 'Navigate', icon: 'home', label: 'Home', run: function () { goTo('home'); } },
+        { group: 'Navigate', icon: 'user', label: 'About', run: function () { goTo('about'); } },
+        { group: 'Navigate', icon: 'briefcase', label: 'Experience', keys: 'work pwc jobs', run: function () { goTo('experience'); } },
+        { group: 'Navigate', icon: 'rocket', label: 'Projects', run: function () { goTo('projects'); } },
+        { group: 'Navigate', icon: 'layer-group', label: 'Skills', keys: 'stack tech', run: function () { goTo('skills'); } },
+        { group: 'Navigate', icon: 'trophy', label: 'Achievements', keys: 'leetcode certifications education', run: function () { goTo('achievements'); } },
+        { group: 'Navigate', icon: 'paper-plane', label: 'Contact', run: function () { goTo('contact'); } },
+        { group: 'Actions', icon: 'adjust', label: 'Toggle light / dark theme', keys: 'dark mode', run: function () { toggleTheme(); } },
+        { group: 'Actions', icon: 'copy', label: 'Copy email address', hint: EMAIL, run: function () { copyText(EMAIL, 'Email'); } },
+        { group: 'Actions', icon: 'file-download', label: 'Download resume', keys: 'cv pdf', run: function () { openUrl('Tanish_Jain_Resume.pdf'); } },
+        { group: 'Actions', icon: 'envelope', label: 'Send an email', run: function () { window.location.href = 'mailto:' + EMAIL; } },
+        { group: 'Links', icon: 'github', label: 'GitHub', hint: 'tanishjain158', run: function () { openUrl('https://github.com/tanishjain158'); } },
+        { group: 'Links', icon: 'linkedin-in', label: 'LinkedIn', run: function () { openUrl('https://www.linkedin.com/in/tanish-jain-68b285217'); } },
+        { group: 'Links', icon: 'gamepad', label: 'Board Game Inc. (live)', keys: 'project', run: function () { openUrl('https://chimerical-hummingbird-a213c6.netlify.app/'); } },
+        { group: 'Links', icon: 'chart-line', label: 'COVID-19 dashboard (live)', keys: 'project data', run: function () { openUrl('https://covid19-dash.github.io/'); } }
     ];
     var palette = $('.palette');
     var palInput = $('.palette-input');
@@ -658,7 +691,7 @@
             li.id = 'pal-opt-' + i;
             li.setAttribute('role', 'option');
             li.setAttribute('aria-selected', String(i === activeIndex));
-            li.innerHTML = '<i class="' + cmd.icon + '" aria-hidden="true"></i><span></span>' + (cmd.hint ? '<span class="pi-hint"></span>' : '');
+            li.innerHTML = icon(cmd.icon) + '<span></span>' + (cmd.hint ? '<span class="pi-hint"></span>' : '');
             li.children[1].textContent = cmd.label;
             if (cmd.hint) li.children[2].textContent = cmd.hint;
             li.addEventListener('mousemove', function () {
@@ -717,6 +750,129 @@
             track.appendChild(child.cloneNode(true));
         });
     });
+
+    /* ---------------------------------------------------------------
+       Live GitHub repositories (fetched when the section is near view)
+       --------------------------------------------------------------- */
+    var ghSection = $('.gh');
+    if (ghSection && window.fetch) {
+        var GH_USER = 'tanishjain158';
+        var GH_CACHE = 'gh-cache-v1';
+        var langColors = {
+            JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5', Java: '#b07219', HTML: '#e34c26',
+            CSS: '#563d7c', 'C++': '#f34b7d', C: '#555555', 'Jupyter Notebook': '#DA5B0B', PHP: '#4F5D95',
+            Dart: '#00B4AB', Shell: '#89e051', Go: '#00ADD8', Kotlin: '#A97BFF', SCSS: '#c6538c', Vue: '#41b883'
+        };
+        var ghGrid = $('.gh-grid', ghSection);
+        var ghStats = $('.gh-stats', ghSection);
+        ghSection.hidden = false;
+
+        var el = function (tag, cls, text) {
+            var node = document.createElement(tag);
+            if (cls) node.className = cls;
+            if (text != null) node.textContent = text;
+            return node;
+        };
+        var iconEl = function (name) {
+            var wrap = document.createElement('span');
+            wrap.innerHTML = icon(name);
+            return wrap.firstChild;
+        };
+        var timeAgo = function (iso) {
+            var secs = (Date.now() - new Date(iso).getTime()) / 1000;
+            var units = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+            for (var u = 0; u < units.length; u++) {
+                var v = Math.floor(secs / units[u][1]);
+                if (v >= 1) return v + ' ' + units[u][0] + (v > 1 ? 's' : '') + ' ago';
+            }
+            return 'just now';
+        };
+        var renderGitHub = function (data) {
+            var repos = data.repos.filter(function (r) { return !r.fork && !r.archived; })
+                .sort(function (a, b) { return new Date(b.pushed_at) - new Date(a.pushed_at); })
+                .slice(0, 6);
+            if (!repos.length) throw new Error('no repos');
+            var stars = data.repos.reduce(function (sum, r) { return sum + (r.fork ? 0 : r.stargazers_count); }, 0);
+            [[data.user.public_repos, 'repos'], [data.user.followers, 'followers'], [stars, 'stars']].forEach(function (st) {
+                var li = el('li');
+                li.appendChild(el('strong', null, String(st[0])));
+                li.appendChild(document.createTextNode(' ' + st[1]));
+                ghStats.appendChild(li);
+            });
+            ghGrid.textContent = '';
+            repos.forEach(function (r) {
+                var li = el('li', 'gh-card');
+                var a = el('a', 'gh-link');
+                a.href = r.html_url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                var name = el('span', 'gh-name');
+                name.appendChild(iconEl('book'));
+                name.appendChild(document.createTextNode(r.name));
+                a.appendChild(name);
+                a.appendChild(el('p', 'gh-desc', r.description || 'No description yet.'));
+                var meta = el('span', 'gh-meta');
+                if (r.language) {
+                    var lang = el('span');
+                    var dotEl = el('i', 'gh-lang-dot');
+                    dotEl.style.setProperty('--c', langColors[r.language] || '#ff4d6d');
+                    lang.appendChild(dotEl);
+                    lang.appendChild(document.createTextNode(r.language));
+                    meta.appendChild(lang);
+                }
+                var star = el('span');
+                star.appendChild(iconEl('star'));
+                star.appendChild(document.createTextNode(String(r.stargazers_count)));
+                star.setAttribute('aria-label', r.stargazers_count + ' stars');
+                meta.appendChild(star);
+                var fork = el('span');
+                fork.appendChild(iconEl('code-branch'));
+                fork.appendChild(document.createTextNode(String(r.forks_count)));
+                fork.setAttribute('aria-label', r.forks_count + ' forks');
+                meta.appendChild(fork);
+                var upd = el('span');
+                upd.appendChild(iconEl('clock'));
+                upd.appendChild(document.createTextNode(timeAgo(r.pushed_at)));
+                meta.appendChild(upd);
+                a.appendChild(meta);
+                li.appendChild(a);
+                ghGrid.appendChild(li);
+            });
+            ghGrid.setAttribute('aria-busy', 'false');
+        };
+        var loadGitHub = function () {
+            var cached = null;
+            try { cached = JSON.parse(sessionStorage.getItem(GH_CACHE) || 'null'); } catch (e) {}
+            if (cached && Date.now() - cached.t < 3600000) {
+                try { renderGitHub(cached.d); return; } catch (e) {}
+            }
+            var api = 'https://api.github.com/users/' + GH_USER;
+            var get = function (url) {
+                return fetch(url, { headers: { Accept: 'application/vnd.github+json' } }).then(function (res) {
+                    if (!res.ok) throw new Error('GitHub API ' + res.status);
+                    return res.json();
+                });
+            };
+            Promise.all([get(api), get(api + '/repos?per_page=100&sort=pushed')]).then(function (res) {
+                var data = { user: res[0], repos: res[1] };
+                renderGitHub(data);
+                try { sessionStorage.setItem(GH_CACHE, JSON.stringify({ t: Date.now(), d: data })); } catch (e) {}
+            }).catch(function () {
+                ghSection.hidden = true;   // rate-limited or offline: the projects above still stand on their own
+            });
+        };
+        if (hasIO) {
+            var ghIO = new IntersectionObserver(function (entries) {
+                if (entries[0].isIntersecting) {
+                    ghIO.disconnect();
+                    loadGitHub();
+                }
+            }, { rootMargin: '600px 0px' });
+            ghIO.observe(ghSection);
+        } else {
+            loadGitHub();
+        }
+    }
 
     /* ---------------------------------------------------------------
        Copy buttons, contact form, footer year

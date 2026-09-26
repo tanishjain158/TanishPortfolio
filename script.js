@@ -59,9 +59,21 @@
     /* ---------------------------------------------------------------
        Text splitting (hero letters + section heading words)
        --------------------------------------------------------------- */
+    // Gradient words are coloured per letter with solid colours. Clipping a
+    // gradient to text (background-clip: text) on letters that also animate
+    // on their own GPU layers renders as smeared/duplicated glyphs in Chrome.
+    var GRAD_STOPS = [[220, 20, 60], [255, 77, 109], [255, 138, 76]];
+    function gradColor(t) {
+        var seg = Math.min(Math.floor(t * (GRAD_STOPS.length - 1)), GRAD_STOPS.length - 2);
+        var f = t * (GRAD_STOPS.length - 1) - seg;
+        var a = GRAD_STOPS[seg], b = GRAD_STOPS[seg + 1];
+        return 'rgb(' + [0, 1, 2].map(function (k) { return Math.round(a[k] + (b[k] - a[k]) * f); }).join(',') + ')';
+    }
     var charIndex = 0;
     $$('[data-split]').forEach(function (el) {
         var text = el.textContent;
+        var gradient = el.classList.contains('grad-text');
+        el.classList.remove('grad-text');
         var label = document.createElement('span');
         label.className = 'visually-hidden';
         label.textContent = text;
@@ -75,6 +87,7 @@
             span.style.setProperty('--i', charIndex++);
             span.style.setProperty('--i2', i);
             span.style.setProperty('--n', text.length);
+            if (gradient) span.style.color = gradColor(text.length > 1 ? i / (text.length - 1) : 0);
             el.appendChild(span);
         });
     });
@@ -86,9 +99,17 @@
             var outer = document.createElement('span');
             outer.className = 'w';
             var inner = document.createElement('span');
-            inner.className = 'wi' + (i === words.length - 1 ? ' grad-word' : '');
+            inner.className = 'wi';
             inner.style.setProperty('--i', i);
-            inner.textContent = word;
+            if (i === words.length - 1) {
+                // gradient lives on a child so the moving .wi never clips text itself
+                var g = document.createElement('span');
+                g.className = 'grad-word';
+                g.textContent = word;
+                inner.appendChild(g);
+            } else {
+                inner.textContent = word;
+            }
             outer.appendChild(inner);
             el.appendChild(outer);
             if (i < words.length - 1) el.appendChild(document.createTextNode(' '));
@@ -129,6 +150,27 @@
     function revealNow(el) {
         el.classList.add('in');
         $$('[data-count]', el).forEach(countUp);
+        $$('.kicker', el).forEach(decodeKicker);
+    }
+    // "cipher" decode of the kicker label (the text after the number badge)
+    function decodeKicker(kicker) {
+        if (reduceMotion || kicker.dataset.decoded) return;
+        kicker.dataset.decoded = '1';
+        var node = kicker.lastChild;
+        if (!node || node.nodeType !== 3) return;
+        var target = node.textContent;
+        var glyphs = '!<>-_\\/[]{}=+*^?#01';
+        var frame = 0, total = 22;
+        (function tick() {
+            var out = '';
+            for (var i = 0; i < target.length; i++) {
+                var settle = (i / target.length) * total;
+                out += (frame >= settle || target[i] === ' ') ? target[i] : glyphs[Math.floor(Math.random() * glyphs.length)];
+            }
+            node.textContent = out;
+            if (frame++ < total) setTimeout(tick, 38);
+            else node.textContent = target;
+        })();
     }
     if (hasIO && !reduceMotion) {
         var revealIO = new IntersectionObserver(function (entries) {
@@ -410,6 +452,10 @@
         })();
         document.addEventListener('pointerover', function (e) {
             ring.classList.toggle('hover', !!e.target.closest('a, button, input, textarea, .tilt, [data-cert]'));
+            var labelled = e.target.closest('[data-cursor]');
+            ring.classList.toggle('labelled', !!labelled);
+            root.classList.toggle('cursor-labelled', !!labelled);
+            if (labelled) ring.setAttribute('data-label', labelled.getAttribute('data-cursor'));
         });
         document.addEventListener('pointerdown', function () { ring.classList.add('down'); });
         document.addEventListener('pointerup', function () { ring.classList.remove('down'); });
@@ -458,6 +504,9 @@
     var ticking = false;
 
     var tlNodes = tlItems.map(function (item) { return item.querySelector('.tl-node'); });
+    var heroInner = $('.hero-inner');
+    var rail = $('.rail');
+    var scrollVel = 0, lastScrollT = performance.now(), lastScrollY = window.scrollY;
     function onScroll() {
         // --- read phase (no DOM writes until every measurement is taken) ---
         var y = window.scrollY;
@@ -490,6 +539,19 @@
             tlItems.forEach(function (item, k) {
                 item.classList.toggle('lit', reduceMotion || nodeMids[k] < line);
             });
+        }
+        // scroll velocity (px/ms, smoothed) feeds the marquees
+        var nowT = performance.now();
+        var dt = Math.max(nowT - lastScrollT, 1);
+        scrollVel = scrollVel * 0.6 + ((y - lastScrollY) / dt) * 0.4;
+        lastScrollT = nowT;
+        lastScrollY = y;
+
+        if (rail) rail.classList.toggle('show', y > vh * 0.6);
+        if (heroInner && !reduceMotion && y < vh * 1.2) {
+            var hp = y / vh;
+            heroInner.style.transform = 'translate3d(0,' + (y * 0.28).toFixed(1) + 'px,0) scale(' + (1 - hp * 0.06).toFixed(4) + ')';
+            heroInner.style.opacity = Math.max(0, 1 - hp * 1.1).toFixed(3);
         }
         parallaxRects.forEach(function (r, k) {
             var el = parallaxEls[k];
@@ -650,6 +712,8 @@
         { group: 'Actions', icon: 'copy', label: 'Copy email address', hint: EMAIL, run: function () { copyText(EMAIL, 'Email'); } },
         { group: 'Actions', icon: 'file-download', label: 'Download resume', keys: 'cv pdf', run: function () { openUrl('Tanish_Jain_Resume.pdf'); } },
         { group: 'Actions', icon: 'envelope', label: 'Send an email', run: function () { window.location.href = 'mailto:' + EMAIL; } },
+        { group: 'Actions', icon: 'terminal', label: 'Open the terminal', keys: 'console shell cli', hint: '`', run: function () { openTerminal(); } },
+        { group: 'Actions', icon: 'keyboard', label: 'Keyboard shortcuts', keys: 'help keys', hint: '?', run: function () { openDialog(shortcutsDlg); } },
         { group: 'Links', icon: 'github', label: 'GitHub', hint: 'tanishjain158', run: function () { openUrl('https://github.com/tanishjain158'); } },
         { group: 'Links', icon: 'linkedin-in', label: 'LinkedIn', run: function () { openUrl('https://www.linkedin.com/in/tanish-jain-68b285217'); } },
         { group: 'Links', icon: 'gamepad', label: 'Board Game Inc. (live)', keys: 'project', run: function () { openUrl('https://chimerical-hummingbird-a213c6.netlify.app/'); } },
@@ -750,6 +814,40 @@
             track.appendChild(child.cloneNode(true));
         });
     });
+    // velocity-reactive marquees: drift at a base speed, speed up and lean with scroll speed
+    if (!reduceMotion) {
+        var marquees = $$('.marquee').map(function (m) {
+            m.classList.add('js-marquee');
+            return { el: m, track: $('.marquee-track', m), x: 0, dir: m.classList.contains('reverse') ? 1 : -1, hover: false, visible: true, half: 0 };
+        });
+        marquees.forEach(function (mq) {
+            mq.el.addEventListener('pointerenter', function () { mq.hover = true; });
+            mq.el.addEventListener('pointerleave', function () { mq.hover = false; });
+            if (hasIO) new IntersectionObserver(function (en) { mq.visible = en[0].isIntersecting; }).observe(mq.el);
+        });
+        var measure = function () { marquees.forEach(function (mq) { mq.half = mq.track.scrollWidth / 2; }); };
+        measure();
+        window.addEventListener('resize', measure);
+        window.addEventListener('load', measure);
+        var mqLast = performance.now(), skew = 0, boostDir = 1;
+        (function marqueeLoop(now) {
+            var dt = Math.min((now || performance.now()) - mqLast, 50);
+            mqLast = now || performance.now();
+            var v = scrollVel;                         // px per ms
+            if (Math.abs(v) > 0.05) boostDir = v > 0 ? 1 : -1;
+            skew += (clamp(v * 3, -8, 8) - skew) * 0.12;
+            marquees.forEach(function (mq) {
+                if (!mq.visible || !mq.half) return;
+                var speed = (mq.hover ? 0.012 : 0.05) + Math.min(Math.abs(v) * 0.9, 2.2);
+                mq.x += mq.dir * boostDir * speed * dt;
+                if (mq.x <= -mq.half) mq.x += mq.half;
+                if (mq.x > 0) mq.x -= mq.half;
+                mq.track.style.transform = 'translate3d(' + mq.x.toFixed(1) + 'px,0,0) skewX(' + (-skew).toFixed(2) + 'deg)';
+            });
+            scrollVel *= 0.92;                          // settle when scrolling stops
+            requestAnimationFrame(marqueeLoop);
+        })();
+    }
 
     /* ---------------------------------------------------------------
        Live GitHub repositories (fetched when the section is near view)
@@ -806,6 +904,7 @@
                 a.href = r.html_url;
                 a.target = '_blank';
                 a.rel = 'noopener noreferrer';
+                a.setAttribute('data-cursor', 'Open');
                 var name = el('span', 'gh-name');
                 name.appendChild(iconEl('book'));
                 name.appendChild(document.createTextNode(r.name));
@@ -897,4 +996,438 @@
 
     var yearEl = $('#year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    /* ---------------------------------------------------------------
+       Hero name: dock-style letters that rise toward the cursor
+       --------------------------------------------------------------- */
+    var heroName = $('.hero-name');
+    if (heroName && finePointer && !reduceMotion) {
+        var chars = $$('.char', heroName);
+        var dockRaf = 0, dockX = 0, dockY = 0;
+        var applyDock = function () {
+            dockRaf = 0;
+            chars.forEach(function (ch) {
+                var r = ch.getBoundingClientRect();
+                var d = Math.hypot(dockX - (r.left + r.width / 2), (dockY - (r.top + r.height / 2)) * 0.6);
+                var f = Math.max(0, 1 - d / 170);
+                f = f * f * (3 - 2 * f);                 // smoothstep
+                ch.style.translate = '0 ' + (-f * 0.14).toFixed(3) + 'em';
+                ch.style.scale = (1 + f * 0.1).toFixed(3);
+            });
+        };
+        heroName.addEventListener('pointermove', function (e) {
+            dockX = e.clientX; dockY = e.clientY;
+            heroName.classList.add('docking');
+            if (!dockRaf) dockRaf = requestAnimationFrame(applyDock);
+        });
+        heroName.addEventListener('pointerleave', function () {
+            heroName.classList.remove('docking');
+            chars.forEach(function (ch) { ch.style.translate = ''; ch.style.scale = ''; });
+        });
+    }
+
+    /* ---------------------------------------------------------------
+       Footer spotlight on the giant name
+       --------------------------------------------------------------- */
+    var footerEl = $('.footer');
+    var giant = $('.footer-giant');
+    if (footerEl && giant && finePointer) {
+        footerEl.addEventListener('pointermove', function (e) {
+            var r = giant.getBoundingClientRect();
+            giant.style.setProperty('--fx', (e.clientX - r.left) + 'px');
+            giant.style.setProperty('--fy', (e.clientY - r.top) + 'px');
+        });
+    }
+
+    /* ---------------------------------------------------------------
+       Section rail (active dot)
+       --------------------------------------------------------------- */
+    var railLinks = $$('.rail a');
+    if (railLinks.length && hasIO) {
+        var railIO = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (!entry.isIntersecting) return;
+                railLinks.forEach(function (a) {
+                    var on = a.getAttribute('href') === '#' + entry.target.id;
+                    a.classList.toggle('active', on);
+                    if (on) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
+                });
+            });
+        }, { rootMargin: '-45% 0px -50% 0px' });
+        $$('main section[id]').forEach(function (sec) { railIO.observe(sec); });
+    }
+
+    /* ---------------------------------------------------------------
+       Local time in Indore
+       --------------------------------------------------------------- */
+    var localTime = $('.local-time');
+    if (localTime && window.Intl) {
+        var fmt = new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', minute: '2-digit', hour12: true, weekday: 'short' });
+        var tickClock = function () { localTime.textContent = fmt.format(new Date()) + ' IST'; };
+        tickClock();
+        setInterval(tickClock, 30000);
+    }
+
+    /* ---------------------------------------------------------------
+       Project filter with FLIP animation
+       --------------------------------------------------------------- */
+    var filterChips = $$('.filter-chip');
+    var projects = $$('.project[data-cats]');
+    var filterStatus = $('.filter-status');
+    if (filterChips.length) {
+        filterChips.forEach(function (chip) {
+            var f = chip.dataset.filter;
+            var n = projects.filter(function (p) { return f === 'all' || p.dataset.cats.split(' ').indexOf(f) !== -1; }).length;
+            $('.count', chip).textContent = n;
+            chip.addEventListener('click', function () { applyFilter(f, chip); });
+        });
+    }
+    function applyFilter(f, chip) {
+        var first = new Map();
+        projects.forEach(function (p) { if (!p.classList.contains('filtered-out')) first.set(p, p.getBoundingClientRect()); });
+        filterChips.forEach(function (c) { c.setAttribute('aria-pressed', String(c === chip)); });
+        var shown = 0;
+        projects.forEach(function (p) {
+            var match = f === 'all' || p.dataset.cats.split(' ').indexOf(f) !== -1;
+            p.classList.toggle('filtered-out', !match);
+            if (match) shown++;
+        });
+        if (filterStatus) filterStatus.textContent = 'Showing ' + shown + ' of ' + projects.length + ' projects';
+        if (reduceMotion || !projects[0].animate) return;
+        projects.forEach(function (p) {
+            if (p.classList.contains('filtered-out')) return;
+            var last = p.getBoundingClientRect();
+            var prev = first.get(p);
+            if (prev) {
+                var dx = prev.left - last.left, dy = prev.top - last.top;
+                if (dx || dy) p.animate([{ translate: dx + 'px ' + dy + 'px' }, { translate: '0 0' }], { duration: 600, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+            } else {
+                p.animate([{ opacity: 0, scale: '0.9', translate: '0 24px' }, { opacity: 1, scale: '1', translate: '0 0' }], { duration: 600, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' });
+            }
+        });
+    }
+
+    /* ---------------------------------------------------------------
+       Confetti (terminal "hire" command + Konami code)
+       --------------------------------------------------------------- */
+    function confetti() {
+        if (reduceMotion) return;
+        var cv = document.createElement('canvas');
+        cv.className = 'confetti';
+        document.body.appendChild(cv);
+        var cx2 = cv.getContext('2d');
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+        cx2.scale(dpr, dpr);
+        var colors = ['#dc143c', '#ff4d6d', '#ff8a4c', '#ffd166', '#ffffff', '#a78bfa'];
+        var bits = [];
+        for (var i = 0; i < 160; i++) {
+            var fromLeft = i % 2 === 0;
+            bits.push({
+                x: fromLeft ? 0 : innerWidth, y: innerHeight * 0.75,
+                vx: (fromLeft ? 1 : -1) * (4 + Math.random() * 9), vy: -(9 + Math.random() * 11),
+                w: 6 + Math.random() * 6, h: 8 + Math.random() * 10, r: Math.random() * Math.PI, vr: (Math.random() - 0.5) * 0.3,
+                c: colors[i % colors.length]
+            });
+        }
+        var start = performance.now();
+        (function frame(now) {
+            var t = now - start;
+            cx2.clearRect(0, 0, innerWidth, innerHeight);
+            bits.forEach(function (b) {
+                b.vy += 0.32; b.vx *= 0.99; b.x += b.vx; b.y += b.vy; b.r += b.vr;
+                cx2.save();
+                cx2.globalAlpha = Math.max(0, 1 - t / 3200);
+                cx2.translate(b.x, b.y); cx2.rotate(b.r);
+                cx2.fillStyle = b.c;
+                cx2.fillRect(-b.w / 2, -b.h / 2, b.w, b.h * Math.abs(Math.cos(b.r * 2)));
+                cx2.restore();
+            });
+            if (t < 3300) requestAnimationFrame(frame); else cv.remove();
+        })(start);
+    }
+
+    /* ---------------------------------------------------------------
+       Interactive terminal
+       --------------------------------------------------------------- */
+    var PROFILE = {
+        name: 'Tanish Jain',
+        role: 'AI Engineer @ PwC · Software Engineer',
+        location: 'Indore, India',
+        email: EMAIL,
+        phone: '+91 96020 01568',
+        github: 'https://github.com/tanishjain158',
+        linkedin: 'https://www.linkedin.com/in/tanish-jain-68b285217',
+        resume: 'Tanish_Jain_Resume.pdf',
+        summary: [
+            'Software engineer with 2+ years designing and scaling full-stack apps,',
+            'data pipelines and AI features with Java, MERN, Python, GCP and AWS.',
+            'Impact: 40% faster data ingestion · 30% better ML accuracy · 90% fewer security incidents.'
+        ],
+        experience: [
+            ['2026 – Present', 'AI Engineer', 'PwC'],
+            ['Mar 2026 – Apr 2026', 'Network Engineer', 'Moreyeahs Pvt. Limited'],
+            ['Feb 2025 – Aug 2025', 'Junior Software Engineer', 'iEnergizer IT Solutions'],
+            ['Jan 2024 – Nov 2024', 'Software Development Engineer', 'Growwstacks Automation Solutions']
+        ],
+        projects: [
+            ['AI-Powered Code Review Engine', 'MERN · Gemini API · Render', 'https://hiring-search.careerflow.ai/'],
+            ['Data Visualization: COVID-19', 'Next.js · Kafka · Spark · Hive · HBase', 'https://covid19-dash.github.io/'],
+            ['Board Game Inc.', 'Next.js · React · Stripe · MongoDB', 'https://chimerical-hummingbird-a213c6.netlify.app/'],
+            ['Portfolio', 'HTML · CSS · JavaScript', 'https://github.com/tanishjain158/TanishPortfolio']
+        ],
+        skills: [
+            ['languages', 'Java, C++, C, Python, JavaScript, TypeScript, SQL, Bash'],
+            ['frontend', 'React, Next.js, AngularJS, Redux, HTML5, CSS3, Bootstrap, MUI'],
+            ['backend', 'Node.js, Express, Spring Boot, Django, MongoDB, REST, Microservices'],
+            ['cloud/data', 'GCP, AWS, Docker, Kubernetes, Airflow, Kafka, Spark, Hive, HBase'],
+            ['ml', 'Machine Learning, AI, Data Analytics, DSA']
+        ],
+        education: 'B.Tech Computer Science · Medi-Caps University · CGPA 9.14 · 2020–2024',
+        certs: ['AWS (Amazon) · 2023', 'CCNA (Cisco) · 2024', 'Microsoft AI & ML Engineering · 2024'],
+        achievements: [
+            'LeetCode top 10% globally · 1737 rating · 700+ problems',
+            'Google Kickstart 2022 · rank 3,394 / 17,464',
+            '1st prize · GDSC Flutter Quiz, IIT Indore (2023)',
+            'Hacktoberfest 2022 · 3 badges',
+            'Programming mentor · BitByte (20 students)'
+        ]
+    };
+    var termDlg = $('.terminal');
+    var termOut = $('.term-out');
+    var termInput = $('.term-input');
+    var termForm = $('.term-form');
+    var termBody = $('.term-body');
+    var termHistory = [], histIdx = 0, termBooted = false;
+    var shortcutsDlg = $('.shortcuts');
+
+    function tLine(parts) {
+        // parts: array of strings or [text, className] or {link, text}
+        var line = document.createElement('span');
+        line.className = 't-line';
+        (Array.isArray(parts) ? parts : [parts]).forEach(function (p) {
+            if (typeof p === 'string') {
+                line.appendChild(document.createTextNode(p));
+            } else if (p.link) {
+                var a = document.createElement('a');
+                a.href = p.link;
+                if (/^https?:/.test(p.link) || /\.pdf$/.test(p.link)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+                a.textContent = p.text || p.link;
+                line.appendChild(a);
+            } else {
+                var span = document.createElement('span');
+                span.className = p[1];
+                span.textContent = p[0];
+                line.appendChild(span);
+            }
+        });
+        termOut.appendChild(line);
+        return line;
+    }
+    function tBlank() { tLine(''); }
+    function scrollTerm() { termBody.scrollTop = termBody.scrollHeight; }
+    function pad(str, n) { str = String(str); while (str.length < n) str += ' '; return str; }
+
+    var termCommands = {
+        help: { d: 'list available commands', run: function () {
+            tLine([['Available commands:', 't-accent']]);
+            Object.keys(termCommands).forEach(function (k) {
+                if (termCommands[k].hidden) return;
+                tLine(['  ', [pad(k, 14), 't-ok'], termCommands[k].d]);
+            });
+            tLine([['  Tip: ', 't-dim'], ['Tab completes, ↑/↓ browse history, Ctrl+L clears.', 't-dim']]);
+        } },
+        about: { d: 'who I am', run: function () {
+            tLine([[PROFILE.name, 't-accent'], ' · ', PROFILE.role]);
+            PROFILE.summary.forEach(function (l) { tLine(l); });
+        } },
+        whoami: { d: 'short intro', run: function () { tLine([['visitor', 't-ok'], ' — exploring ', [PROFILE.name, 't-accent'], "'s portfolio. Welcome!"]); } },
+        experience: { d: 'work history', run: function () {
+            PROFILE.experience.forEach(function (e) { tLine([[pad(e[0], 22), 't-dim'], [e[1], 't-cmd'], ' @ ', [e[2], 't-accent']]); });
+        } },
+        projects: { d: 'things I have built', run: function () {
+            PROFILE.projects.forEach(function (p, i) {
+                tLine([[(i + 1) + '. ', 't-dim'], [p[0], 't-accent']]);
+                tLine(['   ', [p[1], 't-dim'], '  ', { link: p[2], text: 'open ↗' }]);
+            });
+        } },
+        skills: { d: 'technical toolkit', run: function () {
+            PROFILE.skills.forEach(function (s2) { tLine([[pad(s2[0], 12), 't-ok'], s2[1]]); });
+        } },
+        education: { d: 'degree', run: function () { tLine(PROFILE.education); } },
+        certs: { d: 'certifications', run: function () { PROFILE.certs.forEach(function (c2) { tLine([['✓ ', 't-ok'], c2]); }); } },
+        achievements: { d: 'wins & rankings', run: function () { PROFILE.achievements.forEach(function (a2) { tLine([['★ ', 't-accent'], a2]); }); } },
+        contact: { d: 'how to reach me', run: function () {
+            tLine([[pad('email', 10), 't-ok'], { link: 'mailto:' + PROFILE.email, text: PROFILE.email }]);
+            tLine([[pad('phone', 10), 't-ok'], { link: 'tel:+919602001568', text: PROFILE.phone }]);
+            tLine([[pad('linkedin', 10), 't-ok'], { link: PROFILE.linkedin }]);
+            tLine([[pad('github', 10), 't-ok'], { link: PROFILE.github }]);
+        } },
+        resume: { d: 'open my resume (PDF)', run: function () { tLine(['Opening ', { link: PROFILE.resume, text: 'Tanish_Jain_Resume.pdf' }, ' …']); openUrl(PROFILE.resume); } },
+        open: { d: 'open github | linkedin | resume | email', args: ['github', 'linkedin', 'resume', 'email'], run: function (arg) {
+            var map = { github: PROFILE.github, linkedin: PROFILE.linkedin, resume: PROFILE.resume, email: 'mailto:' + PROFILE.email };
+            if (!map[arg]) return tLine([['usage: open github | linkedin | resume | email', 't-err']]);
+            tLine(['Opening ', [arg, 't-accent'], ' …']);
+            if (arg === 'email') window.location.href = map[arg]; else openUrl(map[arg]);
+        } },
+        goto: { d: 'jump to a section', args: ['about', 'experience', 'projects', 'skills', 'achievements', 'contact', 'home'], run: function (arg) {
+            if (!document.getElementById(arg)) return tLine([['usage: goto about | experience | projects | skills | achievements | contact', 't-err']]);
+            termDlg.close();
+            setTimeout(function () { goTo(arg); }, 80);
+        } },
+        theme: { d: 'theme light | dark | toggle', args: ['light', 'dark', 'toggle'], run: function (arg) {
+            var cur = currentTheme();
+            var next = arg === 'light' || arg === 'dark' ? arg : (cur === 'dark' ? 'light' : 'dark');
+            if (next !== cur) toggleTheme(termDlg.querySelector('.term-dots'));
+            tLine(['Theme set to ', [next, 't-accent'], '.']);
+        } },
+        neofetch: { d: 'system info, portfolio style', run: function () {
+            var art = ['   ████████╗     ██╗', '   ╚══██╔══╝     ██║', '      ██║        ██║', '      ██║   ██   ██║', '      ██║   ╚█████╔╝', '      ╚═╝    ╚════╝ '];
+            var info = [
+                [['tanish', 't-accent'], '@', ['portfolio', 't-accent']],
+                ['----------------'],
+                [['role      ', 't-ok'], 'AI Engineer @ PwC'],
+                [['exp       ', 't-ok'], '2+ years'],
+                [['stack     ', 't-ok'], 'Java · MERN · Python · GCP · AWS'],
+                [['leetcode  ', 't-ok'], '1737 · top 10%'],
+                [['cgpa      ', 't-ok'], '9.14'],
+                [['uptime    ', 't-ok'], 'shipping since 2021']
+            ];
+            if (termBody.clientWidth < 600) {      // narrow screens: skip the logo so lines don't wrap
+                info.forEach(function (row) { tLine(row); });
+                return;
+            }
+            for (var i = 0; i < Math.max(art.length, info.length); i++) {
+                tLine([[pad(art[i] || '', 24), 't-prompt']].concat(info[i] || []));
+            }
+        } },
+        ls: { d: 'list files', run: function () {
+            tLine([['about.txt  experience.log  projects/  skills.json  achievements.md  contact.vcf  ', 't-cmd'], ['resume.pdf', 't-accent']]);
+        } },
+        cat: { d: 'print a file (try: cat about.txt)', args: ['about.txt', 'experience.log', 'skills.json', 'achievements.md', 'contact.vcf', 'resume.pdf'], run: function (arg) {
+            var map = { 'about.txt': 'about', 'experience.log': 'experience', 'skills.json': 'skills', 'achievements.md': 'achievements', 'contact.vcf': 'contact', 'resume.pdf': 'resume' };
+            if (arg === 'projects' || arg === 'projects/') return tLine([['cat: projects/: Is a directory (try: projects)', 't-err']]);
+            if (!map[arg]) return tLine([['cat: ' + (arg || '') + ': No such file (try: ls)', 't-err']]);
+            termCommands[map[arg]].run();
+        } },
+        date: { d: 'current time in Indore', run: function () {
+            tLine(new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'full', timeStyle: 'short' }) + ' IST');
+        } },
+        echo: { d: 'print text', run: function (arg, raw) { tLine(raw); } },
+        history: { d: 'previous commands', run: function () { termHistory.forEach(function (h, i) { tLine([[pad(i + 1, 4), 't-dim'], h]); }); } },
+        clear: { d: 'clear the screen', run: function () { termOut.textContent = ''; } },
+        hire: { d: 'the best command', run: function () { hireMe(); } },
+        sudo: { hidden: true, d: '', run: function (arg, raw) {
+            if (/hire/.test(raw)) return hireMe();
+            tLine([['Nice try. ', 't-err'], 'This incident will be reported to… nobody. Try ', ['sudo hire-tanish', 't-ok'], '.']);
+        } },
+        exit: { d: 'close the terminal', run: function () { termDlg.close(); } }
+    };
+    termCommands.quit = { hidden: true, d: '', run: termCommands.exit.run };
+    termCommands.cls = { hidden: true, d: '', run: termCommands.clear.run };
+
+    function hireMe() {
+        tLine([['✔ ', 't-ok'], 'Permission granted. Excellent choice.']);
+        tLine(['Reach Tanish at ', { link: 'mailto:' + PROFILE.email + '?subject=' + encodeURIComponent("Let's work together"), text: PROFILE.email }, ' or ', { link: PROFILE.linkedin, text: 'LinkedIn' }, '.']);
+        confetti();
+    }
+
+    function runTerm(raw) {
+        var input = raw.trim();
+        tLine([['tanish@portfolio:~$ ', 't-prompt'], [input, 't-cmd']]);
+        if (input) {
+            termHistory.push(input);
+            if (termHistory.length > 50) termHistory.shift();
+        }
+        histIdx = termHistory.length;
+        if (!input) return scrollTerm();
+        var parts = input.split(/\s+/);
+        var name = parts[0].toLowerCase();
+        var rest = input.slice(parts[0].length).trim();
+        var cmd = termCommands[name];
+        if (cmd) cmd.run((parts[1] || '').toLowerCase(), rest);
+        else tLine([['command not found: ', 't-err'], name, '. Type ', ['help', 't-ok'], ' to see what I can do.']);
+        tBlank();
+        scrollTerm();
+    }
+
+    function completeTerm() {
+        var val = termInput.value;
+        var parts = val.split(/\s+/);
+        var pool, prefix;
+        if (parts.length <= 1) {
+            pool = Object.keys(termCommands).filter(function (k) { return !termCommands[k].hidden; });
+            prefix = parts[0].toLowerCase();
+        } else {
+            var c3 = termCommands[parts[0].toLowerCase()];
+            pool = c3 && c3.args ? c3.args : [];
+            prefix = parts[parts.length - 1].toLowerCase();
+        }
+        var hits = pool.filter(function (k) { return k.indexOf(prefix) === 0; });
+        if (hits.length === 1) {
+            parts[parts.length - 1] = hits[0];
+            termInput.value = parts.join(' ') + ' ';
+        } else if (hits.length > 1) {
+            tLine([['tanish@portfolio:~$ ', 't-prompt'], [val, 't-cmd']]);
+            tLine([[hits.join('   '), 't-dim']]);
+            scrollTerm();
+        }
+    }
+
+    function openTerminal() {
+        if (!termDlg || !openDialog(termDlg)) return;
+        if (!termBooted) {
+            termBooted = true;
+            tLine([['Welcome to ', 't-dim'], ['tanish@portfolio', 't-accent'], [' — an interactive tour of my work.', 't-dim']]);
+            tLine([['Type ', 't-dim'], ['help', 't-ok'], [' to get started, or try ', 't-dim'], ['neofetch', 't-ok'], [', ', 't-dim'], ['projects', 't-ok'], [' or ', 't-dim'], ['sudo hire-tanish', 't-ok'], ['.', 't-dim']]);
+            tBlank();
+        }
+        setTimeout(function () { termInput.focus(); }, 30);
+        scrollTerm();
+    }
+
+    if (termDlg) {
+        termForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var v = termInput.value;
+            termInput.value = '';
+            runTerm(v);
+        });
+        termInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Tab') { e.preventDefault(); completeTerm(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); if (histIdx > 0) { histIdx--; termInput.value = termHistory[histIdx]; } }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); if (histIdx < termHistory.length - 1) { histIdx++; termInput.value = termHistory[histIdx]; } else { histIdx = termHistory.length; termInput.value = ''; } }
+            else if (e.key.toLowerCase() === 'l' && e.ctrlKey) { e.preventDefault(); termOut.textContent = ''; }
+        });
+        termBody.addEventListener('click', function (e) { if (!e.target.closest('a') && !window.getSelection().toString()) termInput.focus(); });
+        $('.term-close').addEventListener('click', function () { termDlg.close(); });
+        $$('.term-open').forEach(function (b) { b.addEventListener('click', openTerminal); });
+    }
+    if (shortcutsDlg) $('.sc-close').addEventListener('click', function () { shortcutsDlg.close(); });
+
+    /* ---------------------------------------------------------------
+       Global keyboard shortcuts
+       --------------------------------------------------------------- */
+    var goPending = false, goTimer;
+    var konami = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+    var konamiPos = 0;
+    document.addEventListener('keydown', function (e) {
+        var k = e.key.toLowerCase();
+        konamiPos = k === konami[konamiPos] ? konamiPos + 1 : (k === konami[0] ? 1 : 0);
+        if (konamiPos === konami.length) { konamiPos = 0; confetti(); toast('Konami code unlocked!'); }
+
+        var typing = e.target.closest && e.target.closest('input, textarea, [contenteditable="true"]');
+        if (typing || e.metaKey || e.ctrlKey || e.altKey || $('dialog[open]')) return;
+        if (goPending) {
+            var map = { a: 'about', e: 'experience', p: 'projects', s: 'skills', c: 'contact', h: 'home' };
+            goPending = false;
+            clearTimeout(goTimer);
+            if (map[k]) { e.preventDefault(); goTo(map[k]); }
+            return;
+        }
+        if (e.key === '`') { e.preventDefault(); openTerminal(); }
+        else if (e.key === '?') { e.preventDefault(); openDialog(shortcutsDlg); }
+        else if (k === 't') { toggleTheme(); }
+        else if (k === 'g') { goPending = true; goTimer = setTimeout(function () { goPending = false; }, 1200); }
+    });
 })();

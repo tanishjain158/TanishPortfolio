@@ -715,9 +715,7 @@
         { group: 'Actions', icon: 'terminal', label: 'Open the terminal', keys: 'console shell cli', hint: '`', run: function () { openTerminal(); } },
         { group: 'Actions', icon: 'keyboard', label: 'Keyboard shortcuts', keys: 'help keys', hint: '?', run: function () { openDialog(shortcutsDlg); } },
         { group: 'Links', icon: 'github', label: 'GitHub', hint: 'tanishjain158', run: function () { openUrl('https://github.com/tanishjain158'); } },
-        { group: 'Links', icon: 'linkedin-in', label: 'LinkedIn', run: function () { openUrl('https://www.linkedin.com/in/tanish-jain-68b285217'); } },
-        { group: 'Links', icon: 'gamepad', label: 'Board Game Inc. (live)', keys: 'project', run: function () { openUrl('https://chimerical-hummingbird-a213c6.netlify.app/'); } },
-        { group: 'Links', icon: 'chart-line', label: 'COVID-19 dashboard (live)', keys: 'project data', run: function () { openUrl('https://covid19-dash.github.io/'); } }
+        { group: 'Links', icon: 'linkedin-in', label: 'LinkedIn', run: function () { openUrl('https://www.linkedin.com/in/tanish-jain-68b285217'); } }
     ];
     var palette = $('.palette');
     var palInput = $('.palette-input');
@@ -1171,9 +1169,9 @@
         ],
         projects: [
             ['AI-Powered Code Review Engine', 'MERN · Gemini API · Render', ''],
-            ['Data Visualization: COVID-19', 'Next.js · Kafka · Spark · Hive · HBase', 'https://covid19-dash.github.io/'],
-            ['Board Game Inc.', 'Next.js · React · Stripe · MongoDB', 'https://chimerical-hummingbird-a213c6.netlify.app/'],
-            ['Portfolio', 'HTML · CSS · JavaScript', 'https://github.com/tanishjain158/TanishPortfolio']
+            ['Data Visualization: COVID-19', 'Next.js · Kafka · Spark · Hive · HBase', ''],
+            ['Board Game Inc.', 'Next.js · React · Stripe · MongoDB', ''],
+            ['Portfolio', 'HTML · CSS · JavaScript', '']
         ],
         skills: [
             ['languages', 'Java, C++, C, Python, JavaScript, TypeScript, SQL, Bash'],

@@ -1279,7 +1279,6 @@ picture{
     border-radius: 9px;
 }
 .pb-1{ bottom: 34%; right: -10%; }
-.pb-2{ bottom: 9%; left: -9%; animation-delay: -3s; }
 .about-copy .lead{
     font-family: var(--display);
     font-size: clamp(21px, 2.3vw, 27px);
@@ -3005,7 +3004,6 @@ dialog[open]{
         font-size: 12.5px;
     }
     .pb-1{ right: -4px; }
-    .pb-2{ left: -4px; }
     .info-list,
     .form-row{
         grid-template-columns: 1fr;

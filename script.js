@@ -978,7 +978,7 @@
        --------------------------------------------------------------- */
     $$('.copy-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
-            copyText(btn.dataset.copy, btn.dataset.copy.indexOf('@') !== -1 ? 'Email' : 'Phone number');
+            copyText(btn.dataset.copy, 'Email');
         });
     });
 
@@ -1156,7 +1156,6 @@
         role: 'AI Engineer @ PwC · Software Engineer',
         location: 'Indore, India',
         email: EMAIL,
-        phone: '+91 96020 01568',
         github: 'https://github.com/tanishjain158',
         linkedin: 'https://www.linkedin.com/in/tanish-jain-68b285217',
         resume: 'Tanish_Jain_Resume.pdf',
@@ -1171,7 +1170,7 @@
             ['Jan 2024 – Nov 2024', 'Software Development Engineer', 'Growwstacks Automation Solutions']
         ],
         projects: [
-            ['AI-Powered Code Review Engine', 'MERN · Gemini API · Render', 'https://hiring-search.careerflow.ai/'],
+            ['AI-Powered Code Review Engine', 'MERN · Gemini API · Render', ''],
             ['Data Visualization: COVID-19', 'Next.js · Kafka · Spark · Hive · HBase', 'https://covid19-dash.github.io/'],
             ['Board Game Inc.', 'Next.js · React · Stripe · MongoDB', 'https://chimerical-hummingbird-a213c6.netlify.app/'],
             ['Portfolio', 'HTML · CSS · JavaScript', 'https://github.com/tanishjain158/TanishPortfolio']
@@ -1248,7 +1247,7 @@
         projects: { d: 'things I have built', run: function () {
             PROFILE.projects.forEach(function (p, i) {
                 tLine([[(i + 1) + '. ', 't-dim'], [p[0], 't-accent']]);
-                tLine(['   ', [p[1], 't-dim'], '  ', { link: p[2], text: 'open ↗' }]);
+                tLine(['   ', [p[1], 't-dim']].concat(p[2] ? ['  ', { link: p[2], text: 'open ↗' }] : []));
             });
         } },
         skills: { d: 'technical toolkit', run: function () {
@@ -1259,7 +1258,6 @@
         achievements: { d: 'wins & rankings', run: function () { PROFILE.achievements.forEach(function (a2) { tLine([['★ ', 't-accent'], a2]); }); } },
         contact: { d: 'how to reach me', run: function () {
             tLine([[pad('email', 10), 't-ok'], { link: 'mailto:' + PROFILE.email, text: PROFILE.email }]);
-            tLine([[pad('phone', 10), 't-ok'], { link: 'tel:+919602001568', text: PROFILE.phone }]);
             tLine([[pad('linkedin', 10), 't-ok'], { link: PROFILE.linkedin }]);
             tLine([[pad('github', 10), 't-ok'], { link: PROFILE.github }]);
         } },

@@ -1167,7 +1167,7 @@
         ],
         experience: [
             ['2026 – Present', 'AI Engineer', 'PwC'],
-            ['Feb 2025 – Aug 2025', 'Junior Software Engineer', 'iEnergizer IT Solutions'],
+            ['Feb 2025 – Jul 2026', 'Software Engineer', 'Tech Mahindra'],
             ['Jan 2024 – Nov 2024', 'Software Development Engineer', 'Growwstacks Automation Solutions']
         ],
         projects: [

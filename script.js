@@ -1163,11 +1163,10 @@
         summary: [
             'Software engineer with 2+ years designing and scaling full-stack apps,',
             'data pipelines and AI features with Java, MERN, Python, GCP and AWS.',
-            'Impact: 40% faster data ingestion · 30% better ML accuracy · 90% fewer security incidents.'
+            'Impact: 40% faster data ingestion · 30% better ML accuracy · 1,000+ users in 30 days.'
         ],
         experience: [
             ['2026 – Present', 'AI Engineer', 'PwC'],
-            ['Mar 2026 – Apr 2026', 'Network Engineer', 'Moreyeahs Pvt. Limited'],
             ['Feb 2025 – Aug 2025', 'Junior Software Engineer', 'iEnergizer IT Solutions'],
             ['Jan 2024 – Nov 2024', 'Software Development Engineer', 'Growwstacks Automation Solutions']
         ],

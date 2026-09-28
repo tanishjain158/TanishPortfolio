@@ -1181,7 +1181,7 @@
             ['frontend', 'React, Next.js, AngularJS, Redux, HTML5, CSS3, Bootstrap, MUI'],
             ['backend', 'Node.js, Express, Spring Boot, Django, MongoDB, REST, Microservices'],
             ['cloud/data', 'GCP, AWS, Docker, Kubernetes, Airflow, Kafka, Spark, Hive, HBase'],
-            ['ml', 'Machine Learning, AI, Data Analytics, DSA']
+            ['ml', 'Machine Learning, AI, LLMs, LangChain, Data Analytics, DSA']
         ],
         education: 'B.Tech Computer Science · Medi-Caps University · CGPA 9.14 · 2020–2024',
         certs: ['AWS (Amazon) · 2023', 'CCNA (Cisco) · 2024', 'Microsoft AI & ML Engineering · 2024'],

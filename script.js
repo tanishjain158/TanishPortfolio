@@ -29,12 +29,19 @@
        --------------------------------------------------------------- */
     var toastEl = $('.toast');
     var toastTimer;
-    function toast(message) {
-        toastEl.innerHTML = icon('check-circle') + message;
+    function toast(message, ms, iconName) {
+        toastEl.innerHTML = icon(iconName || 'check-circle') + message;
         toastEl.classList.add('show');
         clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 2400);
+        toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, ms || 2400);
     }
+    var RESUME_URL = 'Tanish_Jain_Resume.pdf?v=2';
+    var RESUME_NOTE = 'The resume is password-protected. Email ' + EMAIL + ' for the password.';
+    function resumeNote() { toast(RESUME_NOTE, 6000, 'lock'); }
+    // every resume link opens the (encrypted) PDF and explains how to get the password
+    document.addEventListener('click', function (e) {
+        if (e.target.closest && e.target.closest('[data-resume]')) resumeNote();
+    });
 
     function copyText(text, label) {
         function done() { toast(label + ' copied to clipboard'); }
@@ -710,7 +717,7 @@
         { group: 'Navigate', icon: 'paper-plane', label: 'Contact', run: function () { goTo('contact'); } },
         { group: 'Actions', icon: 'adjust', label: 'Toggle light / dark theme', keys: 'dark mode', run: function () { toggleTheme(); } },
         { group: 'Actions', icon: 'copy', label: 'Copy email address', hint: EMAIL, run: function () { copyText(EMAIL, 'Email'); } },
-        { group: 'Actions', icon: 'file-download', label: 'Download resume', keys: 'cv pdf', run: function () { openUrl('Tanish_Jain_Resume.pdf'); } },
+        { group: 'Actions', icon: 'file-download', label: 'Download resume', keys: 'cv pdf', run: function () { openUrl(RESUME_URL); resumeNote(); } },
         { group: 'Actions', icon: 'envelope', label: 'Send an email', run: function () { window.location.href = 'mailto:' + EMAIL; } },
         { group: 'Actions', icon: 'terminal', label: 'Open the terminal', keys: 'console shell cli', hint: '`', run: function () { openTerminal(); } },
         { group: 'Actions', icon: 'keyboard', label: 'Keyboard shortcuts', keys: 'help keys', hint: '?', run: function () { openDialog(shortcutsDlg); } },
@@ -1156,7 +1163,7 @@
         email: EMAIL,
         github: 'https://github.com/tanishjain158',
         linkedin: 'https://www.linkedin.com/in/tanish-jain-68b285217',
-        resume: 'Tanish_Jain_Resume.pdf',
+        resume: 'Tanish_Jain_Resume.pdf?v=2',
         summary: [
             'Software engineer with 2+ years designing and scaling full-stack apps,',
             'data pipelines and AI features with Java, MERN, Python, GCP and AWS.',
@@ -1259,7 +1266,7 @@
             tLine([[pad('linkedin', 10), 't-ok'], { link: PROFILE.linkedin }]);
             tLine([[pad('github', 10), 't-ok'], { link: PROFILE.github }]);
         } },
-        resume: { d: 'open my resume (PDF)', run: function () { tLine(['Opening ', { link: PROFILE.resume, text: 'Tanish_Jain_Resume.pdf' }, ' …']); openUrl(PROFILE.resume); } },
+        resume: { d: 'open my resume (PDF)', run: function () { tLine(['Opening ', { link: PROFILE.resume, text: 'Tanish_Jain_Resume.pdf' }, ' …']); tLine([['🔒 ', 't-accent'], ['Password-protected. Email ', 't-dim'], { link: 'mailto:' + PROFILE.email, text: PROFILE.email }, [' for the password.', 't-dim']]); openUrl(PROFILE.resume); } },
         open: { d: 'open github | linkedin | resume | email', args: ['github', 'linkedin', 'resume', 'email'], run: function (arg) {
             var map = { github: PROFILE.github, linkedin: PROFILE.linkedin, resume: PROFILE.resume, email: 'mailto:' + PROFILE.email };
             if (!map[arg]) return tLine([['usage: open github | linkedin | resume | email', 't-err']]);

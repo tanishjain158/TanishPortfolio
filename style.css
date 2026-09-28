@@ -3209,6 +3209,11 @@ dialog[open]{
     grid-column: span 3;
 }
 
+.lock-mark{
+    font-size: 0.78em;
+    opacity: 0.85;
+}
+
 /* ============================== project filter ============================== */
 .filters{
     display: flex;

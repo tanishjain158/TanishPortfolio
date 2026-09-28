@@ -207,6 +207,8 @@ picture{
     max-width: 1220px;
     margin: 0 auto;
     padding: 0 clamp(20px, 5vw, 48px);
+    padding-left: max(clamp(20px, 5vw, 48px), env(safe-area-inset-left));
+    padding-right: max(clamp(20px, 5vw, 48px), env(safe-area-inset-right));
 }
 .grad-text,
 .grad-word{
@@ -2647,8 +2649,8 @@ html:not(.js) .ring-fg{
 /* ============================== floating UI ============================== */
 .to-top{
     position: fixed;
-    right: 24px;
-    bottom: 24px;
+    right: calc(24px + env(safe-area-inset-right));
+    bottom: calc(24px + env(safe-area-inset-bottom));
     z-index: 998;
     width: 52px;
     height: 52px;
@@ -2693,8 +2695,10 @@ html:not(.js) .ring-fg{
 .toast{
     position: fixed;
     left: 50%;
-    bottom: 28px;
+    bottom: calc(28px + env(safe-area-inset-bottom));
     z-index: 10003;
+    width: max-content;
+    max-width: calc(100vw - 32px);
     padding: 12px 20px;
     font-size: 14.5px;
     font-weight: 500;
@@ -2742,6 +2746,7 @@ dialog[open]{
 .lightbox{
     width: min(1000px, calc(100vw - 32px));
     max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
     margin: auto;
     padding: 0;
     overflow: hidden;
@@ -2801,6 +2806,7 @@ dialog[open]{
 }
 .palette-list{
     max-height: min(52vh, 420px);
+    max-height: min(52dvh, 420px);
     overflow-y: auto;
     padding: 8px;
 }
@@ -3264,7 +3270,7 @@ dialog[open]{
     min-width: 22px;
     padding: 0 6px;
     font-family: var(--mono);
-    font-size: 11.5px;
+    font-size: 12px;
     line-height: 20px;
     text-align: center;
     border-radius: 999px;
@@ -3406,6 +3412,7 @@ dialog[open]{
 .terminal{
     width: min(760px, calc(100vw - 28px));
     height: min(560px, calc(100vh - 60px));
+    height: min(560px, calc(100dvh - 40px));
     margin: auto;
     padding: 0;
     overflow: hidden;
@@ -3581,6 +3588,171 @@ dialog[open]{
 @media (max-width: 1100px){
     .rail{
         display: none;
+    }
+}
+
+/* ============================== device compatibility ============================== */
+a,
+button{
+    -webkit-tap-highlight-color: transparent;
+}
+button,
+.btn,
+.filter-chip{
+    touch-action: manipulation;
+}
+.term-chips{
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 12px;
+}
+.term-chips button{
+    min-height: 36px;
+    padding: 6px 12px;
+    font: inherit;
+    font-size: 13px;
+    color: #ffc2cc;
+    background: rgba(255, 77, 109, 0.12);
+    border: 1px solid rgba(255, 77, 109, 0.35);
+    border-radius: 999px;
+    cursor: pointer;
+}
+.term-chips button:active{
+    background: rgba(255, 77, 109, 0.3);
+}
+
+/* touch screens: no Tab key, no hover, and iOS zooms into inputs under 16px */
+@media (hover: none), (pointer: coarse){
+    .term-chips{
+        display: flex;
+    }
+    .field input,
+    .field textarea,
+    .term-input,
+    .palette-input{
+        font-size: 16px;
+    }
+    .palette-btn kbd,
+    .kbd-hint,
+    .palette-foot{
+        display: none;
+    }
+    /* hover lifts would "stick" after a tap */
+    .tilt:hover{
+        --lift: 0px;
+    }
+    .btn:hover,
+    .info-list li:hover,
+    .chips li:hover,
+    .skill-list li:hover,
+    .filter-chip:hover,
+    .logo-tile:hover,
+    .cert-card:hover,
+    .footer-social a:hover,
+    .icon-btn:hover{
+        transform: none;
+    }
+    .btn:hover::after{
+        transform: translateX(-120%);
+    }
+    .project:hover .project-visual > *,
+    .gallery-item:hover img{
+        transform: none;
+    }
+    /* no hover to reveal it, so the zoom badge on certificates stays visible */
+    .gallery-item::after{
+        opacity: 1;
+        transform: none;
+    }
+    .rail{
+        display: none;
+    }
+}
+@media (max-width: 980px){
+    .field input,
+    .field textarea,
+    .term-input{
+        font-size: 16px;
+    }
+}
+
+/* mobile menu: scroll when it doesn't fit (landscape phones), centred when it does */
+@media (max-width: 980px){
+    .menu,
+    .navbar.scrolled .menu{
+        justify-content: flex-start;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: calc(var(--nav-h) + 12px) 0 calc(28px + env(safe-area-inset-bottom));
+    }
+    .menu li:first-child{
+        margin-top: auto;
+    }
+    .menu li:last-child{
+        margin-bottom: auto;
+    }
+}
+
+/* short landscape screens (phones turned sideways) */
+@media (max-height: 520px) and (orientation: landscape){
+    .hero{
+        padding: calc(var(--nav-h) + 18px) 0 56px;
+    }
+    .hero-name{
+        font-size: clamp(44px, 7vw, 76px);
+    }
+    .hero-name .hero-hi{
+        margin-bottom: 4px;
+    }
+    .hero-cta{
+        margin-top: 22px;
+    }
+    .hero-proof{
+        margin-top: 22px;
+    }
+    .hero-visual{
+        width: min(100%, 340px);
+    }
+    .scroll-cue{
+        display: none;
+    }
+    .section{
+        padding: 64px 0;
+    }
+    .menu a,
+    .navbar.scrolled .menu a{
+        font-size: 24px;
+        padding: 4px 22px;
+    }
+}
+
+/* small laptops / tablets in landscape: give the name room next to the globe */
+@media (min-width: 981px) and (max-width: 1200px){
+    .hero-name{
+        font-size: clamp(52px, 7.4vw, 116px);
+    }
+    .fc-1{ left: 0; }
+    .fc-2{ right: 0; }
+}
+
+/* large monitors: use more of the screen */
+@media (min-width: 1800px){
+    .container{
+        max-width: 1380px;
+    }
+    .hero-name{
+        font-size: clamp(52px, 7vw, 136px);
+    }
+    .hero-lead{
+        max-width: 620px;
+        font-size: 18.5px;
+    }
+    .hero-visual{
+        width: min(100%, 580px);
+    }
+    .section-head{
+        max-width: 880px;
     }
 }
 

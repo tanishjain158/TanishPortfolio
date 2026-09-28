@@ -1404,6 +1404,9 @@
         });
         termBody.addEventListener('click', function (e) { if (!e.target.closest('a') && !window.getSelection().toString()) termInput.focus(); });
         $('.term-close').addEventListener('click', function () { termDlg.close(); });
+        $$('.term-chips button').forEach(function (b) {
+            b.addEventListener('click', function () { runTerm(b.dataset.cmd); });
+        });
         $$('.term-open').forEach(function (b) { b.addEventListener('click', openTerminal); });
     }
     if (shortcutsDlg) $('.sc-close').addEventListener('click', function () { shortcutsDlg.close(); });

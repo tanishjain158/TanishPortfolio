@@ -3591,6 +3591,85 @@ dialog[open]{
     }
 }
 
+/* ============================== intro skip, contact actions, tenure, section links ============================== */
+.with-intro.intro-skipped{
+    --intro-delay: 0.05s;
+}
+.intro-skipped .intro{
+    display: none !important;
+}
+.intro-skip-hint{
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(34px + env(safe-area-inset-bottom));
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    animation: skip-hint 1.5s ease 0.15s forwards;
+}
+@keyframes skip-hint{
+    0%{ opacity: 0; }
+    25%, 72%{ opacity: 1; }
+    100%{ opacity: 0; }
+}
+.contact-side{
+    display: grid;
+    gap: 14px;
+    align-content: start;
+}
+.contact-actions{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 4px;
+}
+.contact-actions .btn{
+    flex: 1 1 190px;
+}
+.tl-duration{
+    padding: 2px 10px;
+    font-size: 12px;
+    color: var(--accent-text);
+    background: var(--accent-soft);
+    border-radius: 999px;
+}
+.anchor-btn{
+    display: inline-grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    font-size: 12px;
+    color: var(--accent-text);
+    background: transparent;
+    border: 1px solid currentColor;
+    border-radius: 8px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.25s, background 0.25s, color 0.25s;
+}
+.section-head:hover .anchor-btn,
+.anchor-btn:focus-visible{
+    opacity: 1;
+}
+.anchor-btn:hover{
+    color: #fff;
+    background: var(--accent);
+    border-color: var(--accent);
+}
+@media (hover: none), (pointer: coarse){
+    .anchor-btn{
+        opacity: 0.85;
+        width: 34px;
+        height: 34px;
+    }
+}
+
 /* ============================== device compatibility ============================== */
 a,
 button{

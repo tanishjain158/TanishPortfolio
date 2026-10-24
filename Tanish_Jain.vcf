@@ -1,0 +1,13 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Jain;Tanish;;;
+FN:Tanish Jain
+TITLE:AI Engineer
+ORG:PwC
+EMAIL;TYPE=INTERNET,PREF:tanishharsh158@gmail.com
+URL:https://tanishjain158.github.io/TanishPortfolio/
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/tanish-jain-68b285217
+X-SOCIALPROFILE;TYPE=github:https://github.com/tanishjain158
+ADR;TYPE=HOME:;;;Indore;Madhya Pradesh;;India
+NOTE:Software engineer: full-stack\, data pipelines and AI (Java\, MERN\, Python\, GCP\, AWS).
+END:VCARD

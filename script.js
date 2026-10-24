@@ -7,6 +7,22 @@
     var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     var hasIO = 'IntersectionObserver' in window;
     var EMAIL = 'tanishharsh158@gmail.com';
+    var SITE_URL = 'https://tanishjain158.github.io/TanishPortfolio/';
+
+    // tap, click, scroll or any key skips the intro
+    if (root.classList.contains('with-intro')) {
+        var skipOpts = { capture: true, passive: true };
+        var skipEvents = ['pointerdown', 'keydown', 'wheel', 'touchstart'];
+        var stopSkip = function () {
+            skipEvents.forEach(function (t) { window.removeEventListener(t, skipIntro, skipOpts); });
+        };
+        var skipIntro = function () {
+            root.classList.add('intro-skipped');
+            stopSkip();
+        };
+        skipEvents.forEach(function (t) { window.addEventListener(t, skipIntro, skipOpts); });
+        setTimeout(stopSkip, 2600);
+    }
 
     function icon(name) {
         return '<svg class="i i-' + name + '" aria-hidden="true"><use href="#i-' + name + '"></use></svg>';
@@ -124,6 +140,26 @@
     });
 
     /* ---------------------------------------------------------------
+       "Copy link" button on each section heading
+       --------------------------------------------------------------- */
+    $$('.section[id] .section-head .kicker').forEach(function (kicker) {
+        var id = kicker.closest('.section').id;
+        var label = '';
+        kicker.childNodes.forEach(function (cn) { if (cn.nodeType === 3) label += cn.textContent; });
+        label = label.trim() || id;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'anchor-btn';
+        btn.setAttribute('aria-label', 'Copy link to the ' + label + ' section');
+        btn.title = 'Copy link to this section';
+        btn.innerHTML = icon('link');
+        btn.addEventListener('click', function () {
+            copyText(SITE_URL + '#' + id, 'Link to ' + label);
+        });
+        kicker.appendChild(btn);
+    });
+
+    /* ---------------------------------------------------------------
        Count-up numbers
        --------------------------------------------------------------- */
     function formatNumber(n, decimals, comma) {
@@ -163,9 +199,22 @@
     function decodeKicker(kicker) {
         if (reduceMotion || kicker.dataset.decoded) return;
         kicker.dataset.decoded = '1';
-        var node = kicker.lastChild;
-        if (!node || node.nodeType !== 3) return;
-        var target = node.textContent;
+        var textNode = null;
+        for (var n = 0; n < kicker.childNodes.length; n++) {
+            var cn = kicker.childNodes[n];
+            if (cn.nodeType === 3 && cn.textContent.trim()) { textNode = cn; break; }
+        }
+        if (!textNode) return;
+        var target = textNode.textContent;
+        // screen readers get the real label; the scrambling copy is hidden from them
+        var srLabel = document.createElement('span');
+        srLabel.className = 'visually-hidden';
+        srLabel.textContent = target;
+        var node = document.createElement('span');
+        node.setAttribute('aria-hidden', 'true');
+        node.textContent = target;
+        kicker.replaceChild(node, textNode);
+        kicker.insertBefore(srLabel, node);
         var glyphs = '!<>-_\\/[]{}=+*^?#01';
         var frame = 0, total = 22;
         (function tick() {
@@ -511,6 +560,17 @@
     var ticking = false;
 
     var tlNodes = tlItems.map(function (item) { return item.querySelector('.tl-node'); });
+    var themeMetas = $$('meta[name="theme-color"]');
+    var lastBarColor = '';
+    function syncBarColor(atHero) {
+        // read the theme directly: this runs on load, before the theme toggle is set up
+        var dark = (root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')) === 'dark';
+        var color = atHero || dark ? '#07070b' : '#fbfbfd';
+        if (color === lastBarColor) return;
+        lastBarColor = color;
+        themeMetas.forEach(function (m) { m.setAttribute('content', color); });
+    }
+    var barAtHero = true;
     var heroInner = $('.hero-inner');
     var rail = $('.rail');
     var scrollVel = 0, lastScrollT = performance.now(), lastScrollY = window.scrollY;
@@ -527,6 +587,7 @@
             return r.top + r.height / 2;
         });
         var parallaxRects = reduceMotion ? [] : parallaxEls.map(function (el) { return el.getBoundingClientRect(); });
+        barAtHero = hero ? y < hero.offsetHeight - 70 : false;
 
         // --- write phase ---
         navbar.classList.toggle('scrolled', y > 30);
@@ -555,6 +616,7 @@
         lastScrollY = y;
 
         if (rail) rail.classList.toggle('show', y > vh * 0.6);
+        syncBarColor(barAtHero);
         if (heroInner && !reduceMotion && y < vh * 1.2) {
             var hp = y / vh;
             heroInner.style.transform = 'translate3d(0,' + (y * 0.28).toFixed(1) + 'px,0) scale(' + (1 - hp * 0.06).toFixed(4) + ')';
@@ -600,12 +662,18 @@
     var menu = $('#menu');
     var menuBtn = $('.menu-btn');
     $$('li', menu).forEach(function (li, i) { li.style.setProperty('--li', i); });
+    var inertWhileMenu = ['main', '.footer', '.to-top', '.rail', '.skip-link'].map(function (sel) { return $(sel); }).filter(Boolean);
     function setMenu(open) {
         menu.classList.toggle('active', open);
         document.body.classList.toggle('menu-open', open);
         menuBtn.setAttribute('aria-expanded', String(open));
         menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-        if (open) navbar.classList.remove('nav-hidden');
+        // everything behind the open menu is unreachable by keyboard and screen readers
+        inertWhileMenu.forEach(function (el) { el.inert = open; });
+        if (open) {
+            navbar.classList.remove('nav-hidden');
+            setTimeout(function () { var first = menu.querySelector('a'); if (first) first.focus({ preventScroll: true }); }, 80);
+        }
     }
     menuBtn.addEventListener('click', function () { setMenu(!menu.classList.contains('active')); });
     $$('a', menu).forEach(function (a) { a.addEventListener('click', function () { setMenu(false); }); });
@@ -630,6 +698,8 @@
         root.setAttribute('data-theme', next);
         try { localStorage.setItem('theme', next); } catch (e) {}
         syncThemeButton();
+        lastBarColor = '';
+        syncBarColor(barAtHero);
     }
     function toggleTheme(originEl) {
         var next = currentTheme() === 'dark' ? 'light' : 'dark';
@@ -719,6 +789,8 @@
         { group: 'Actions', icon: 'copy', label: 'Copy email address', hint: EMAIL, run: function () { copyText(EMAIL, 'Email'); } },
         { group: 'Actions', icon: 'file-download', label: 'Download resume', keys: 'cv pdf', run: function () { openUrl(RESUME_URL); resumeNote(); } },
         { group: 'Actions', icon: 'envelope', label: 'Send an email', run: function () { window.location.href = 'mailto:' + EMAIL; } },
+        { group: 'Actions', icon: 'share-alt', label: 'Share this portfolio', keys: 'link send', run: function () { sharePortfolio(); } },
+        { group: 'Actions', icon: 'address-card', label: 'Save contact card', keys: 'vcard vcf phone contacts', run: function () { saveContact(); } },
         { group: 'Actions', icon: 'terminal', label: 'Open the terminal', keys: 'console shell cli', hint: '`', run: function () { openTerminal(); } },
         { group: 'Actions', icon: 'keyboard', label: 'Keyboard shortcuts', keys: 'help keys', hint: '?', run: function () { openDialog(shortcutsDlg); } },
         { group: 'Links', icon: 'github', label: 'GitHub', hint: 'tanishjain158', run: function () { openUrl('https://github.com/tanishjain158'); } },
@@ -1001,6 +1073,25 @@
 
     var yearEl = $('#year');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    /* ---------------------------------------------------------------
+       Share the portfolio / save the contact card
+       --------------------------------------------------------------- */
+    function sharePortfolio() {
+        var data = { title: 'Tanish Jain | AI Engineer at PwC', text: 'Portfolio of Tanish Jain, AI Engineer at PwC and software engineer.', url: SITE_URL };
+        if (navigator.share) navigator.share(data).catch(function () {});
+        else copyText(SITE_URL, 'Portfolio link');
+    }
+    function saveContact() {
+        var a = document.createElement('a');
+        a.href = 'Tanish_Jain.vcf';
+        a.download = 'Tanish_Jain.vcf';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast('Contact card downloaded', 2400, 'address-card');
+    }
+    $$('.share-btn').forEach(function (b) { b.addEventListener('click', sharePortfolio); });
     window.__portfolioReady = true;
 
     /* ---------------------------------------------------------------
@@ -1319,6 +1410,8 @@
         echo: { d: 'print text', run: function (arg, raw) { tLine(raw); } },
         history: { d: 'previous commands', run: function () { termHistory.forEach(function (h, i) { tLine([[pad(i + 1, 4), 't-dim'], h]); }); } },
         clear: { d: 'clear the screen', run: function () { termOut.textContent = ''; } },
+        share: { d: 'share this portfolio', run: function () { tLine(['Sharing ', { link: SITE_URL }, ' …']); sharePortfolio(); } },
+        vcard: { d: 'save my contact card', run: function () { tLine(['Downloading ', { link: 'Tanish_Jain.vcf', text: 'Tanish_Jain.vcf' }, ' …']); saveContact(); } },
         hire: { d: 'the best command', run: function () { hireMe(); } },
         sudo: { hidden: true, d: '', run: function (arg, raw) {
             if (/hire/.test(raw)) return hireMe();
